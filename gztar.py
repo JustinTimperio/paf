@@ -32,7 +32,7 @@ def untar_dir(path):
         tar.extractall(path[:-4])
 
 #######################
-### Core gztar commands
+### Core gztar Commands
 ###################
 def gztar_c(dir, queue_depth, rmbool):
     files = search_fs(dir)
@@ -57,11 +57,11 @@ def gztar_d(tar, queue_depth, rmbool):
 #######################
 ### Parse Args
 ###################
-p = argparse.ArgumentParser('A pure python implementation of parallel gzip compression archives.')
+p = argparse.ArgumentParser(description='A pure python implementation of parallel gzip compression archives.')
 p.add_argument('-c', '--compress', metavar='/DIR/TO/COMPRESS', nargs=1, help='Recursively gzip files in a dir then place in tar.')
 p.add_argument('-d', '--decompress', metavar='/TAR/TO/DECOMPRESS.tar', nargs=1, help='Untar archive then recursively decompress gzip\'ed files')
-p.add_argument('-t', '--throttle', action='store_true', help='Throttle compression to only 75% of the available cores.')
-p.add_argument('-r', '--remove', action='store_true', help='Throttle compression to only 75% of the available cores.')
+p.add_argument('-t', '--throttle', action='store_true', help='Throttle compression to only 75%% of the available cores.')
+p.add_argument('-r', '--remove', action='store_true', help='Remove TAR/Folder after process.')
 arg = p.parse_args()
 ### Flags
 if arg.throttle == True:

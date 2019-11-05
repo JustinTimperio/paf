@@ -1,5 +1,6 @@
 #! /usr/bin/python
 # This script builds bash commands that compress files in parallel
+import os, argparse
 
 def compress(dir):
     os.system('find ' + dir + ' -type f | parallel gzip -q && tar -cf '
