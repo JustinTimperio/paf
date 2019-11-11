@@ -1,17 +1,16 @@
 #! /usr/bin/python
 #### Network Commands - v1.0
+import requests, socket
 
 ######
 ### Network and Web Fuctions
 ######
 
 def dl_url(url, file_name):
-    import requests
     r = requests.get(url, allow_redirects=True)
     open(file_name, 'wb').write(r.content)
 
 def is_url_downloadable(url):
-    import requests
     h = requests.head(url, allow_redirects=True)
     header = h.headers
     content_type = header.get('content-type')
@@ -22,7 +21,6 @@ def is_url_downloadable(url):
     return True
 
 def get_local_ip():
-    import socket
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         # doesn't even have to be reachable

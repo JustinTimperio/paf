@@ -1,5 +1,6 @@
 #! /usr/bin/python
-#### Linux Commands - 1.0
+#### Linux Commands - v1.0
+import os, sys, subprocess
 
 ######
 ### File System Commands and Short-Cuts
@@ -61,8 +62,8 @@ def apt(package, arg='install'):
 def zypper(package, arg='install'):
     os.system("sudo zypper " + arg + " " + package)
 
-def pip_install(packages):
-    os.system("sudo pip install " + packages)
+def pip_install(packages, arg='install'):
+    os.system("sudo pip " + arg + " " + packages)
 
-def aurman_install(packages):
-    os.system("aurman -S --needed " + packages)
+def aurman_install(packages, arg='-S'):
+    os.system("aurman " + arg + " --needed " + packages)

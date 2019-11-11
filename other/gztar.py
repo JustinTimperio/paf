@@ -1,5 +1,6 @@
 #! /usr/bin/python
-## A pure python implementation of parallel gzip compression using multiprocessing
+#### A pure python implementation of parallel gzip compression using multiprocessing
+
 import os, gzip, tarfile, shutil, argparse, tqdm
 import multiprocessing as mp
 
