@@ -1,11 +1,6 @@
 #! /usr/bin/python
 #### Archive Commands - v1.0
-import os, gzip, tarfile, shutil, argparse, tqdm
-import multiprocessing as mp
-
-def search_fs(path):
-    list_name = [os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(path)) for f in fn] 
-    return list_name
+import os, gzip, tarfile, shutil
 
 #######################
 ### Gzip and Tar Functions 
@@ -34,9 +29,10 @@ def untar_dir(path):
 #######################
 ### Core gztar Commands
 ###################
-def gztar_c(dir, queue_depth=round(mp.cpu_count()*.75), rmbool=True):
+def gztar_c(dir, queue_depth=round(os.cpu_count()*.75), rmbool=True):
+    import multiprocessing, tqdm 
     files = search_fs(dir)
-    with mp.Pool(queue_depth) as pool:
+    with multiprocessing.Pool(queue_depth) as pool:
         r = list(tqdm.tqdm(pool.imap(gzip_compress_file, files),
                            total=len(files), desc='Compressing Files'))
     print('Adding Compressed Files to TAR....')
@@ -44,13 +40,14 @@ def gztar_c(dir, queue_depth=round(mp.cpu_count()*.75), rmbool=True):
     if rmbool == True:
         shutil.rmtree(dir)
     
-def gztar_d(tar, queue_depth=round(mp.cpu_count()*.75), rmbool=True):
+def gztar_d(tar, queue_depth=round(os.cpu_count()*.75), rmbool=True):
+    import multiprocessing, tqdm 
     print('Extracting Files From TAR....')
     untar_dir(tar)
     if rmbool == True:
         os.remove(tar)
     files = search_fs(tar[:-4])
-    with mp.Pool(queue_depth) as pool:
+    with multiprocessing.Pool(queue_depth) as pool:
         r = list(tqdm.tqdm(pool.imap(gzip_decompress_file, files),
                            total=len(files), desc='Decompressing Files'))
 
