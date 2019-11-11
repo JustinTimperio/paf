@@ -1,9 +1,8 @@
 #! /usr/bin/python
 #### Archive Commands - v1.0
-
 import os, gzip, tarfile, shutil, argparse, tqdm
 import multiprocessing as mp
-import ps_linux
+from ps_linux import search_fs
 
 #######################
 ### Gzip and Tar Functions 
