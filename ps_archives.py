@@ -2,7 +2,10 @@
 #### Archive Commands - v1.0
 import os, gzip, tarfile, shutil, argparse, tqdm
 import multiprocessing as mp
-from ps_linux import search_fs
+
+def search_fs(path):
+    list_name = [os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(path)) for f in fn] 
+    return list_name
 
 #######################
 ### Gzip and Tar Functions 
