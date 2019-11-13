@@ -1,5 +1,5 @@
 #! /usr/bin/python
-#### Linux Commands - v1.0
+#### Linux Commands - v1.01
 import os, sys, subprocess
 
 ######
@@ -8,9 +8,12 @@ import os, sys, subprocess
 def open_permissions(path):
     os.system("sudo chmod -R 777 " + path)
 
-def search_fs(path):
-    list_name = [os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(path)) for f in fn] 
-    return list_name
+def search_fs(path, fs_type='list'):
+    fs = [os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(path)) for f in fn] 
+    if type is 'list':
+        return fs_type
+    if type is 'set':
+        return set(fs_type)
 
 def rm_file(file_path, sudo):
     if sudo == 'r':
@@ -37,15 +40,14 @@ def rm_dir(dir_path, sudo):
             os.system('rm -r ' + dir_path)
 
 ######
-### Linux System Commands
+### Terminal Commands
 ######
-def bash_cpu_core_count():
-    core_count = subprocess.check_output("cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l", shell=True)
-    return str(core_count)[2:-3]
-
 def os_distro():
     os_name = subprocess.check_output('cat /etc/os-release | grep PRETTY_NAME= | cut -c 13-', shell=True)
     return str(os_name)[2:-3]
+
+def sed_replace(pattern, file_path):
+    os.system("sed -e'" + pattern + "' -i " + file_path)
 
 ######
 ### Linux System Package Commands
