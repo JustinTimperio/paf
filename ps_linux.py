@@ -10,10 +10,10 @@ def open_permissions(path):
 
 def search_fs(path, fs_type='list'):
     fs = [os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(path)) for f in fn] 
-    if type is 'list':
-        return fs_type
-    if type is 'set':
-        return set(fs_type)
+    if fs_type is 'list':
+        return fs
+    if fs_type is 'set':
+        return set(fs)
 
 def rm_file(file_path, sudo):
     if sudo == 'r':
