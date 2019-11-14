@@ -5,26 +5,40 @@ import os, gzip, tarfile, shutil
 #######################
 ### Gzip and Tar Functions 
 ###################
-def gzip_compress_file(path):
+def gz_c(path, rm=False):
     with open(path, 'rb') as f:
         with gzip.open(path + '.gz', 'wb') as gz:
             shutil.copyfileobj(f, gz)
-    os.remove(path)
+    if rm == True:
+        os.remove(path)
+    if rm == False:
+        return
 
-def gzip_decompress_file(path):
+def gz_d(path, rm=False):
     with gzip.open(path, 'rb') as gz:
         with open(path[:-3], 'wb') as f:
             shutil.copyfileobj(gz, f)
-    os.remove(path)
+    if rm == True:
+        os.remove(path)
+    if rm == False:
+        return
 
-def tar_dir(path):
+def tar_dir(path, rm=False):
     with tarfile.open(path + '.tar', 'w') as tar:
         for f in search_fs(path):
             tar.add(f, f[len(path):])
+    if rm == True:
+        shutil.rmtree(path)
+    if rm == False:
+        return
 
-def untar_dir(path):
+def untar_dir(path, rm=False):
     with tarfile.open(path, 'r:') as tar:
         tar.extractall(path[:-4])
+    if rm == True:
+        os.remove(path)
+    if rm == False:
+        return
 
 #######################
 ### Core gztar Commands
