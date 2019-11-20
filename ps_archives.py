@@ -1,6 +1,6 @@
 #! /usr/bin/python
 #### Archive Commands - v1.0
-import os, gzip, tarfile, shutil
+import os, gzip, tarfile, shutil, hashlib
 
 #######################
 ### Gzip and Tar Functions 
@@ -40,6 +40,25 @@ def untar_dir(path, rm=False):
     if rm == False:
         return
 
+def checksum_file(file_path):
+    size = os.path.getsize(file_path)
+    if size == 0:
+        return 0
+    ### Checksum in python is slow as fuck so i'm ignoring anything larger than 1GB. 
+    ### Hopefully I'll fix this later by using raw linux commands
+    elif size > 1073741824:
+        return print(file_path + ' is Too Large to Checksum with Python! Please Manually Checksum This File.')
+    ### Checksum file in chunks of ~250MB
+    else: 
+        with open(file_path, 'rb') as fh:
+            m = hashlib.md5()
+            while True:
+                data = fh.read(268435456)
+                if not data:
+                    break
+                m.update(data)
+            return str(file_path + ' ' + str(m.hexdigest()))
+
 #######################
 ### Core gztar Commands
 ###################
@@ -64,4 +83,3 @@ def gztar_d(tar, queue_depth=round(os.cpu_count()*.75), rmbool=True):
     with multiprocessing.Pool(queue_depth) as pool:
         r = list(tqdm.tqdm(pool.imap(gzip_decompress_file, files),
                            total=len(files), desc='Decompressing Files'))
-

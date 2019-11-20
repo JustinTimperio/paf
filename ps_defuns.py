@@ -13,13 +13,13 @@ def date_to_today(year, month, day, set_name):
     list_name = {str(end_date - datetime.timedelta(days=x)) for x in range(0, date_delta)}
     return set_name
 
-def yn_frame(prompt, y_defun, n_defun):
-    yn = input(prompt + '? (y/n):')
+def yn_frame(prompt):
+    yn = input(prompt + ' (y/n):')
     if yn.lower() in ['y','yes']: 
-        y_defun
+        return True
     elif yn.lower() in ['no','n']:
-        n_defun
-    else: sys.exit('No usable argument given!') 
+        return False
+    else: sys.exit('Input Must be Y/N!') 
 
 def export_list(file_name, list_name):
     if os.path.exists(file_name):
