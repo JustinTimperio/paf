@@ -43,7 +43,7 @@ def untar_dir(path, rm=False):
 def checksum_file(file_path):
     size = os.path.getsize(file_path)
     if size == 0:
-        return 0
+        return str(file_path + ' 0')
     ### Checksum in python is slow as fuck so i'm ignoring anything larger than 1GB. 
     ### Hopefully I'll fix this later by using raw linux commands
     elif size > 1073741824:
