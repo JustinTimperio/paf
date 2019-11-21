@@ -49,6 +49,18 @@ def os_distro():
 def sed_replace(pattern, file_path):
     os.system("sed -e'" + pattern + "' -i " + file_path)
 
+def uncomment_line_sed(pattern, file_path, sudo):
+    if sudo == True:
+        os.system("sudo sed -e'/" + pattern + "/s/^#//g' -i " + file_path)
+    if sudo == False:
+        os.system("sed -e'/" + pattern + "/s/^#//g' -i " + file_path)
+
+def comment_line_sed(pattern, file_path, sudo):
+    if sudo == True:
+        os.system("sudo sed -e'/" + pattern + "/s/^#*/#/g' -i " + file_path)
+    if sudo == False:
+        os.system("sed -e'/" + pattern + "/s/^#*/#/g' -i " + file_path)
+
 ######
 ### Linux System Package Commands
 ######
