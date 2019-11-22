@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/env python3
 #### Archive Commands - v1.0
 import os, gzip, tarfile, shutil, hashlib
 

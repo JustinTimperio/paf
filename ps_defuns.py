@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/env python3
 #### Core Functions - v1.0
 import os, sys
 
@@ -29,5 +29,5 @@ def export_list(file_name, list_name):
             f.write("%s\n" % i) 
 
 def read_list(file_name):
-    list_name = list(open(file_name).read().splitlines()) 
-    return list_name
+    l = list(open(file_name).read().splitlines()) 
+    return l

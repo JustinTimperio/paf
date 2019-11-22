@@ -1,5 +1,5 @@
-#! /usr/bin/python
-#### Linux Commands - v1.01
+#! /usr/bin/env python3
+#### Linux Commands - v1.02
 import os, sys, subprocess
 
 ######

@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/env python3
 #### Network Commands - v1.0
 import requests, socket
 
