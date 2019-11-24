@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 #### Network Commands - v1.0
-import requests, socket
+import requests
 
 ######
 ### Network and Web Fuctions
@@ -21,6 +21,7 @@ def is_url_downloadable(url):
     return True
 
 def get_local_ip():
+    import socket
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         # doesn't even have to be reachable
