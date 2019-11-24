@@ -16,10 +16,10 @@ def search_fs(path, fs_type='list'):
         return set(fs)
 
 def rm_file(file_path, sudo):
-    if sudo == 'r':
+    if sudo == True:
         if os.path.exists(file_path):
             os.system('sudo rm ' + file_path)
-    elif sudo == 'u':
+    elif sudo == False:
         if os.path.exists(file_path):
             os.system('rm ' + file_path)
     else:
@@ -27,24 +27,24 @@ def rm_file(file_path, sudo):
 
 
 def mkdir(dir, sudo):
-    if sudo == 'r':
+    if sudo == True:
         if not os.path.exists(dir):
             os.system("sudo mkdir " + dir)
-    if sudo == 'u':
+    if sudo == False:
         if not os.path.exists(dir):
             os.system("mkdir " + dir)
     else:
-        return print('Error: sudo arg must be r/u')
+        return print('Error: Sudo Must be True/False!')
 
 def rm_dir(dir_path, sudo):
-    if sudo == 'r':
+    if sudo == True:
         if os.path.exists(dir_path):
             os.system('sudo rm -r ' + dir_path)
-    if sudo == 'u':
+    if sudo == False:
         if not os.path.exists(dir):
             os.system('rm -r ' + dir_path)
     else:
-        return print('Error: sudo arg must be r/u')
+        return print('Error: Sudo Must be True/False!')
 
 ######
 ### Terminal Commands
