@@ -30,7 +30,7 @@ def mkdir(dir, sudo):
     if sudo == True:
         if not os.path.exists(dir):
             os.system("sudo mkdir " + dir)
-    if sudo == False:
+    elif sudo == False:
         if not os.path.exists(dir):
             os.system("mkdir " + dir)
     else:
@@ -40,7 +40,7 @@ def rm_dir(dir_path, sudo):
     if sudo == True:
         if os.path.exists(dir_path):
             os.system('sudo rm -r ' + dir_path)
-    if sudo == False:
+    elif sudo == False:
         if not os.path.exists(dir):
             os.system('rm -r ' + dir_path)
     else:
