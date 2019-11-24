@@ -23,8 +23,7 @@ def rm_file(file_path, sudo):
         if os.path.exists(file_path):
             os.system('rm ' + file_path)
     else:
-        return print('Error: sudo arg must be r/u')
-
+        return print('Error: Sudo Must be True/False!')
 
 def mkdir(dir, sudo):
     if sudo == True:
