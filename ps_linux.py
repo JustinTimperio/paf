@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 #### Linux Commands - v1.02
-import os, sys, subprocess
+import os, subprocess
 
 ######
 ### File System Commands and Short-Cuts
@@ -8,12 +8,13 @@ import os, sys, subprocess
 def open_permissions(path):
     os.system("sudo chmod -R 777 " + path)
 
-def search_fs(path, fs_type='list'):
-    fs = [os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(path)) for f in fn] 
-    if fs_type is 'list':
-        return fs
-    if fs_type is 'set':
-        return set(fs)
+def search_fs(path, typ='list'):
+    if typ.lower() == 'list' or 'l':
+        return [os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(path)) for f in fn]
+    elif typ.lower() == 'set' or 's':
+        return {os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(path)) for f in fn}
+    else:
+        return print('Error: Type Must be List/Set!')
 
 def rm_file(file_path, sudo):
     if sudo == True:
