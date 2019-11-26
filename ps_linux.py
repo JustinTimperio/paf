@@ -9,9 +9,9 @@ def open_permissions(path):
     os.system("sudo chmod -R 777 " + path)
 
 def search_fs(path, typ='list'):
-    if typ.lower() == 'list' or 'l':
+    if typ.lower() in ['list', 'l']:
         return [os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(path)) for f in fn]
-    elif typ.lower() == 'set' or 's':
+    elif typ.lower() in ['set', 's']:
         return {os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(path)) for f in fn}
     else:
         return print('Error: Type Must be List/Set!')
