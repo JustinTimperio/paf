@@ -14,7 +14,7 @@ def date_to_today(year, month, day, set_name):
     return set_name
 
 def yn_frame(prompt):
-    p = ("\033[93m {}\033[00m" .format(promt)) 
+    p = ("\u001b[33;1m{}\033[00m" .format(promt)) 
     yn = input(prompt + ' (y/n):')
     if yn.lower() in ['y','yes']: 
         return True
