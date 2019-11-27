@@ -41,13 +41,15 @@ def untar_dir(path, rm=False):
         return
 
 def checksum_file(file_path):
+    if not os.path.exists(file_path):
+        return str(file_path + ' : FILE MISSING!')
     size = os.path.getsize(file_path)
     if size == 0:
-        return str(file_path + ' 0')
+        return str(file_path + ' : 0')
     ### Checksum in python is slow as fuck so i'm ignoring anything larger than 1GB. 
     ### Hopefully I'll fix this later by using raw linux commands
     elif size > 1073741824:
-        return print(file_path + ' is Too Large to Checksum with Python! Please Manually Checksum This File.')
+        return str(file_path + ' : TOO LARGE!')
     ### Checksum file in chunks of ~250MB
     else: 
         with open(file_path, 'rb') as fh:
@@ -57,7 +59,7 @@ def checksum_file(file_path):
                 if not data:
                     break
                 m.update(data)
-            return str(file_path + ' ' + str(m.hexdigest()))
+            return str(file_path + ' : ' + str(m.hexdigest()))
 
 #######################
 ### Core gztar Commands
