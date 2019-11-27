@@ -14,6 +14,7 @@ def date_to_today(year, month, day, set_name):
     return set_name
 
 def yn_frame(prompt):
+    p = ("\033[93m {}\033[00m" .format(promt)) 
     yn = input(prompt + ' (y/n):')
     if yn.lower() in ['y','yes']: 
         return True
@@ -31,12 +32,3 @@ def export_list(file_name, list_name):
 def read_list(file_name):
     l = list(open(file_name).read().splitlines()) 
     return l
-
-def prRed(text): print("\033[91m {}\033[00m" .format(text)) 
-def prGreen(text): print("\033[92m {}\033[00m" .format(text)) 
-def prYellow(text): print("\033[93m {}\033[00m" .format(text)) 
-def prLightPurple(text): print("\033[94m {}\033[00m" .format(text)) 
-def prPurple(text): print("\033[95m {}\033[00m" .format(text)) 
-def prCyan(text): print("\033[96m {}\033[00m" .format(text)) 
-def prOrange(text): print("\033[33m {}\033[00m" .format(text)) 
-def prBlack(text): print("\033[98m {}\033[00m" .format(text)) 
