@@ -22,13 +22,24 @@ def yn_frame(prompt):
         return False
     else: sys.exit('Input Must be Y/N!') 
 
-def export_list(file_name, list_name):
+def export_list(file_name, iterable):
     if os.path.exists(file_name):
         os.remove(file_name)
     with open(file_name, 'w') as f:
-        for i in list_name:
+        for i in iterable:
             f.write("%s\n" % i) 
 
 def read_list(file_name):
     l = list(open(file_name).read().splitlines()) 
     return l
+
+def read_between(start, end, iterable):
+    lines = []
+    for l in iterable:
+        if l.startswith(start):
+            flag=True
+        elif l.endswith(end):
+            flag=False
+        elif flag:
+            lines.append(l)
+    return lines
