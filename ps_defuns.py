@@ -14,7 +14,7 @@ def date_to_today(year, month, day, set_name):
     return set_name
 
 def yn_frame(prompt):
-    p = ("\u001b[33;1m{}\033[00m" .format(promt)) 
+    p = ("\u001b[33;1m{}\033[00m" .format(prompt)) 
     yn = input(prompt + ' (y/n):')
     if yn.lower() in ['y','yes']: 
         return True
@@ -34,12 +34,15 @@ def read_list(file_name):
     return l
 
 def read_between(start, end, iterable):
-    lines = []
+    lines = list()
+    flag = None
     for l in iterable:
-        if l.startswith(start):
+        if l == start:
             flag=True
-        elif l.endswith(end):
+        elif l == end:
             flag=False
-        elif flag:
+        elif flag is None or flag == False:
+            pass
+        elif flag == True:
             lines.append(l)
     return lines
