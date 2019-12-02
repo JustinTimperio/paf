@@ -33,16 +33,30 @@ def read_list(file_name):
     l = list(open(file_name).read().splitlines()) 
     return l
 
-def read_between(start, end, iterable):
+def read_between(start, end, iterable, re_flag=False):
     lines = list()
     flag = None
-    for l in iterable:
-        if l == start:
-            flag=True
-        elif l == end:
-            flag=False
-        elif flag is None or flag == False:
-            pass
-        elif flag == True:
-            lines.append(l)
-    return lines
+    if re_flag == False:
+        for l in iterable:
+            if l == start:
+                flag=True
+            elif l == end:
+                flag=False
+            elif flag is None or flag == False:
+                pass
+            elif flag == True:
+                lines.append(l)
+        return lines
+    
+    elif re_flag == True:
+        import re
+        for l in iterable:
+            if re.findall(re.escape(start.lower()), l.lower()):
+                flag=True
+            elif re.findall(re.escape(end.lower()), l.lower()):
+                flag=False
+            elif flag is None or flag == False:
+                pass
+            elif flag == True:
+                lines.append(l)
+        return lines
