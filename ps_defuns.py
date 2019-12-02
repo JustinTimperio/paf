@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 #### Core Functions - v1.0
-import os, sys, termcolor
+from .ps_modules import *
 
 ######
 ## Basic Functions
@@ -16,9 +16,9 @@ def date_to_today(year, month, day, set_name):
 def yn_frame(prompt):
     p = ("\u001b[33;1m{}\033[00m" .format(prompt)) 
     yn = input(prompt + ' (y/n):')
-    if yn.lower() in ['y','yes']: 
+    if yn.lower().strip() in ['y','yes']: 
         return True
-    elif yn.lower() in ['no','n']:
+    elif yn.lower().strip() in ['no','n']:
         return False
     else: sys.exit('Input Must be Y/N!') 
 
@@ -60,3 +60,13 @@ def read_between(start, end, iterable, re_flag=False):
             elif flag == True:
                 lines.append(l)
         return lines
+
+def convert_size(size_bytes): 
+    import math
+    if size_bytes == 0: 
+        return "0B" 
+    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB") 
+    i = int(math.floor(math.log(size_bytes, 1024)))
+    power = math.pow(1024, i) 
+    size = round(size_bytes / power, 2) 
+    return "{} {}".format(size, size_name[i])

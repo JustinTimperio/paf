@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 #### Linux Commands - v1.02
-import os, subprocess
+from .ps_modules import *
 
 ######
 ### File System Commands and Short-Cuts
@@ -49,6 +49,9 @@ def rm_dir(dir_path, sudo):
 ######
 ### Terminal Commands
 ######
+def escape_bash(astr):
+    return re.sub("(!| |\$|#|&|\"|\'|\(|\)|\||<|>|`|\\\|;)", r"\\\1", astr)
+
 def os_distro():
     os_name = subprocess.check_output('cat /etc/os-release | grep PRETTY_NAME= | cut -c 13-', shell=True)
     return str(os_name)[2:-3]

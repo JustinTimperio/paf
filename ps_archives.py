@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 #### Archive Commands - v1.0
-import os, gzip, tarfile, shutil, hashlib
+from .ps_modules import *
 
 #######################
 ### Gzip and Tar Functions 

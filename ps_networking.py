@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 #### Network Commands - v1.0
-import requests
+from .ps_modules import *
 
 ######
 ### Network and Web Fuctions
