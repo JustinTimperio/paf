@@ -14,28 +14,19 @@ def date_to_today(year, month, day, set_name):
     return set_name
 
 def yn_frame(prompt):
-    p = ("\u001b[33;1m{}\033[00m" .format(prompt)) 
-    yn = input(prompt + ' (y/n):')
-    if yn.lower().strip() in ['y','yes']: 
-        return True
-    elif yn.lower().strip() in ['no','n']:
-        return False
-    else: sys.exit('Input Must be Y/N!') 
-
-def export_list(file_name, iterable):
-    if os.path.exists(file_name):
-        os.remove(file_name)
-    with open(file_name, 'w') as f:
-        for i in iterable:
-            f.write("%s\n" % i) 
-
-def read_list(file_name):
-    l = list(open(file_name).read().splitlines()) 
-    return l
+    while True:
+        yn = input(prompt + ' (y/n):')
+        if yn.lower().strip() in ['y','yes']: 
+            return True
+        elif yn.lower().strip() in ['no','n']:
+            return False
+        else:
+           print('Please Respond With Yes/No!') 
 
 def read_between(start, end, iterable, re_flag=False):
     lines = list()
     flag = None
+    
     if re_flag == False:
         for l in iterable:
             if l == start:

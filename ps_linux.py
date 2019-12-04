@@ -14,7 +14,7 @@ def search_fs(path, typ='list'):
     elif typ.lower() in ['set', 's']:
         return {os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(path)) for f in fn}
     else:
-        return print('Error: Type Must be List/Set!')
+        sys.exit('Error: Type Must be List/Set!')
 
 def rm_file(file_path, sudo):
     if sudo == True:
@@ -24,7 +24,7 @@ def rm_file(file_path, sudo):
         if os.path.exists(file_path):
             os.system('rm ' + file_path)
     else:
-        return print('Error: Sudo Must be True/False!')
+        sys.exit('Error: Type Must be List/Set!')
 
 def mkdir(dir, sudo):
     if sudo == True:
@@ -34,7 +34,7 @@ def mkdir(dir, sudo):
         if not os.path.exists(dir):
             os.system("mkdir " + dir)
     else:
-        return print('Error: Sudo Must be True/False!')
+        sys.exit('Error: Type Must be List/Set!')
 
 def rm_dir(dir_path, sudo):
     if sudo == True:
@@ -44,7 +44,23 @@ def rm_dir(dir_path, sudo):
         if not os.path.exists(dir):
             os.system('rm -r ' + dir_path)
     else:
-        return print('Error: Sudo Must be True/False!')
+        sys.exit('Error: Type Must be List/Set!')
+
+def export_list(file_name, iterable):
+    if os.path.exists(file_name):
+        os.remove(file_name)
+    with open(file_name, 'w') as f:
+        for i in iterable:
+            f.write("%s\n" % i) 
+
+def read_list(file_name, typ='list'):
+    if typ == 'list':
+        l = list(open(file_name).read().splitlines()) 
+    elif typ == 'set':
+        l = set(open(file_name).read().splitlines()) 
+    else: 
+        sys.exit('Error: Type Must be List/Set!')
+    return l
 
 ######
 ### Terminal Commands
@@ -62,20 +78,20 @@ def sed_replace(pattern, file_path):
 def uncomment_line_sed(pattern, file_path, sudo):
     if sudo == True:
         os.system("sudo sed -e'/" + pattern + "/s/^#//g' -i " + file_path)
-    if sudo == False:
+    elif sudo == False:
         os.system("sed -e'/" + pattern + "/s/^#//g' -i " + file_path)
 
 def comment_line_sed(pattern, file_path, sudo):
     if sudo == True:
         os.system("sudo sed -e'/" + pattern + "/s/^#*/#/g' -i " + file_path)
-    if sudo == False:
+    elif sudo == False:
         os.system("sed -e'/" + pattern + "/s/^#*/#/g' -i " + file_path)
 
 ######
 ### Linux System Package Commands
 ######
 def pacman(package, arg='-S'):
-    os.system("sudo pacman " + arg + " " + package + " --needed")
+    os.system("sudo pacman " + arg + " " + package)
 
 def yum(package, arg='install'):
     os.system("sudo yum " + arg + " " + package)
@@ -89,5 +105,33 @@ def zypper(package, arg='install'):
 def pip_install(packages, arg='install'):
     os.system("sudo pip " + arg + " " + packages)
 
-def aurman_install(packages, arg='-S'):
-    os.system("aurman " + arg + " --needed " + packages)
+def pacaur_install(packages, arg='-S'):
+    os.system("pacaur " + arg +  packages)
+
+
+######
+### Arch Linux Commands
+######
+def pacman_Q(replace_spaces=False):
+    os.system("pacman -Q > /tmp/pacman_q.meta")
+    l = read_list('/tmp/pacman_q.meta', typ='set')
+    rm_file('/tmp/pacman_q.meta', sudo=True)
+    if replace_spaces == True:
+        rl = {s.strip().replace(' ', '-') for s in l}
+        return rl
+    else:
+        return l 
+
+def find_paccache():
+    cache_list = search_fs('~/.cache', 'set')
+    fs_list = set(search_fs('/var/cache/pacman', 'set') | {f for f in cache_list if f.endswith(".pkg.tar.xz")})
+    return fs_list
+
+def find_pacman_pkgs(pkg_list, fs_list):
+    bulk_search = ('|'.join(list(re.escape(pkg) for pkg in pkg_list))) ### Packages like g++ need to be escaped
+    found_pkgs = set()
+    for f in fs_list:
+        if re.findall(bulk_search, f.lower()):
+            found_pkgs.add(f)
+    return found_pkgs
+
