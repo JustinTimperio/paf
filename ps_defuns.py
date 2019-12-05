@@ -23,6 +23,20 @@ def yn_frame(prompt):
         else:
            print('Please Respond With Yes/No!') 
 
+def multi_choice_frame(options):
+    ordered_list = list(options)
+    counter = 1
+    for o in ordered_list:
+        print(o + ': (' + str(counter) + ')')
+        counter += 1
+    selection = input('Enter Your Selection With an INT: ').strip()
+    
+    if re.findall(r'^([1-9]|0[1-9]|[1-9][0-9]|[1-9][1-9][0-9])$', selection):
+        if int(selection) < counter:
+            return ordered_list[int(selection) - 1]
+    return print('No Validate Answer Given! Moving On!')
+
+
 def read_between(start, end, iterable, re_flag=False):
     lines = list()
     flag = None
