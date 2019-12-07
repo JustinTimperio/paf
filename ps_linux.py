@@ -122,9 +122,13 @@ def pacman_Q(replace_spaces=False):
     else:
         return l 
 
-def find_paccache():
+def find_paccache(pac_path=None):
     cache_list = search_fs('~/.cache', 'set')
-    fs_list = set(search_fs('/var/cache/pacman', 'set') | {f for f in cache_list if f.endswith(".pkg.tar.xz")})
+    if pac_path == None:
+        fs_list = set(search_fs('/var/cache/pacman', 'set') | {f for f in cache_list if f.endswith(".pkg.tar.xz")})
+    else:
+        pacback_list = search_fs(pac_path, 'set')
+        fs_list = set(search_fs('/var/cache/pacman', 'set') | {f for f in cache_list if f.endswith(".pkg.tar.xz")} | {f for f in pacback_list if f.endswith(".pkg.tar.xz")})
     return fs_list
 
 def find_pacman_pkgs(pkg_list, fs_list):
@@ -134,4 +138,3 @@ def find_pacman_pkgs(pkg_list, fs_list):
         if re.findall(bulk_search, f.lower()):
             found_pkgs.add(f)
     return found_pkgs
-

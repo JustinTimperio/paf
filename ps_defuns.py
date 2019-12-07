@@ -26,15 +26,18 @@ def yn_frame(prompt):
 def multi_choice_frame(options):
     ordered_list = list(options)
     counter = 1
-    for o in ordered_list:
-        print(o + ': (' + str(counter) + ')')
-        counter += 1
-    selection = input('Enter Your Selection With an INT: ').strip()
+    while True:
+        for o in ordered_list:
+            print(o + ': (' + str(counter) + ')')
+            counter += 1
+        selection = input('Enter Your Selection With an INT: ').strip()
     
-    if re.findall(r'^([1-9]|0[1-9]|[1-9][0-9]|[1-9][1-9][0-9])$', selection):
-        if int(selection) < counter:
-            return ordered_list[int(selection) - 1]
-    return print('No Validate Answer Given! Moving On!')
+        if re.findall(r'^([1-9]|0[1-9]|[1-9][0-9]|[1-9][1-9][0-9])$', selection):
+            if int(selection) < counter:
+                return ordered_list[int(selection) - 1]
+        else: 
+            counter = 1
+            print('No Validate INT Given!')
 
 
 def read_between(start, end, iterable, re_flag=False):
