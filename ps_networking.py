@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 #### Network Commands - v1.0
-from .ps_modules import *
+import os, sys, subprocess, gzip, tarfile, shutil, hashlib, re, requests
 
 ######
 ### Network and Web Fuctions
