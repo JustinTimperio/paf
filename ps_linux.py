@@ -59,14 +59,14 @@ def export_list(file_name, iterable):
         os.remove(file_name)
     with open(file_name, 'w') as f:
         for i in iterable:
-            f.write("%s\n" % i) 
+            f.write("%s\n" % i)
 
 def read_list(file_name, typ='list'):
     if typ == 'list':
-        l = list(open(file_name).read().splitlines()) 
+        l = list(open(file_name).read().splitlines())
     elif typ == 'set':
-        l = set(open(file_name).read().splitlines()) 
-    else: 
+        l = set(open(file_name).read().splitlines())
+    else:
         sys.exit('Error: Type Must be List/Set!')
     return l
 
@@ -115,51 +115,3 @@ def pip_install(packages, arg='install'):
 
 def pacaur_install(packages, arg='-S'):
     os.system("pacaur " + arg +  packages)
-
-
-######
-### Arch Linux Commands
-######
-def pacman_Q(replace_spaces=False):
-    os.system("pacman -Q > /tmp/pacman_q.meta")
-    l = read_list('/tmp/pacman_q.meta', typ='set')
-    rm_file('/tmp/pacman_q.meta', sudo=True)
-    if replace_spaces == True:
-        rl = {s.strip().replace(' ', '-') for s in l}
-        return rl
-    else:
-        return l 
-
-def fetch_paccache(pac_path=None):
-    pac_cache = search_fs('/var/cache/pacman/pkg', 'set')
-    user_cache = {f for f in search_fs('~/.cache', 'set') if f.endswith(".pkg.tar.xz")}
-    
-    if not pac_path == None:
-        pacback_cache = {f for f in search_fs(pac_path, 'set') if f.endswith('.pkg.tar.xz')}
-        fs_list = pac_cache.union(user_cache, pacback_cache)
-    else:
-        fs_list = pac_cache.union(user_cache)
-
-    ### Check for Duplicate Packages in fs_list
-    unique_pkgs = {p.split('/')[-1] for p in fs_list}
-    if len(fs_list) != len(unique_pkgs):
-        prWorking('Filtering Duplicate Packages...')
-        new_fs = set()
-        
-        for u in unique_pkgs:
-            u_split = u.split('/')[-1]
-            for x in fs_list:
-                if x.split('/')[-1] == u_split:
-                    new_fs.add(x)
-                    break
-        return new_fs
-    else:
-        return fs_list
-
-def fetch_pacman_pkgs(pkg_list, fs_list):
-    bulk_search = ('|'.join(list(re.escape(pkg) for pkg in pkg_list))) ### Packages like g++ need to be escaped
-    found_pkgs = set()
-    for f in fs_list:
-        if re.findall(bulk_search, f.lower()):
-            found_pkgs.add(f)
-    return found_pkgs
