@@ -47,7 +47,6 @@ def multi_choice_frame(options):
             counter = 1
             print('No Validate INT Given!')
 
-
 def read_between(start, end, iterable, re_flag=False):
     lines = list()
     flag = None
