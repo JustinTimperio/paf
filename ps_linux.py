@@ -70,6 +70,14 @@ def read_list(file_name, typ='list'):
         sys.exit('Error: Type Must be List/Set!')
     return l
 
+def size_of_files(file_list):
+    ### Returns Size of Files in Bytes
+    size = 0
+    for f in file_list:
+        try: size += os.path.getsize(f)
+        except: pass
+    return size
+
 ######
 ### Terminal Commands
 ######
