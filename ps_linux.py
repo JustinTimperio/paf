@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
-#### Linux Commands - v1.02
-import os, sys, subprocess, gzip, tarfile, shutil, hashlib, re, requests
+#### Linux Commands - v2.0
+import os, sys, subprocess, re 
 
 def prError(text): print("\u001b[31;1m{}\033[00m" .format(text))
 def prSuccess(text): print("\u001b[32;1m{}\033[00m" .format(text))
@@ -13,10 +13,10 @@ def prAdded(text): print("\033[94m{}\033[00m" .format(text))
 ######
 ### File System Commands and Short-Cuts
 ######
-def open_permissions(path):
+def Open_Permissions(path):
     os.system("sudo chmod -R 777 " + path)
 
-def search_fs(path, typ='list'):
+def Search_FS(path, typ='list'):
     if typ.lower() in ['list', 'l']:
         return [os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(path)) for f in fn]
     elif typ.lower() in ['set', 's']:
@@ -24,7 +24,7 @@ def search_fs(path, typ='list'):
     else:
         sys.exit('Error: Type Must be List/Set!')
 
-def rm_file(file_path, sudo):
+def RM_File(file_path, sudo):
     if sudo == True:
         if os.path.exists(file_path):
             os.system('sudo rm ' + file_path)
@@ -34,7 +34,7 @@ def rm_file(file_path, sudo):
     else:
         sys.exit('Error: Type Must be List/Set!')
 
-def mkdir(dir, sudo):
+def MK_Dir(dir, sudo):
     if sudo == True:
         if not os.path.exists(dir):
             os.system("sudo mkdir " + dir)
@@ -44,7 +44,7 @@ def mkdir(dir, sudo):
     else:
         sys.exit('Error: Type Must be List/Set!')
 
-def rm_dir(dir_path, sudo):
+def RM_Dir(dir_path, sudo):
     if sudo == True:
         if os.path.exists(dir_path):
             os.system('sudo rm -r ' + dir_path)
@@ -54,14 +54,14 @@ def rm_dir(dir_path, sudo):
     else:
         sys.exit('Error: Type Must be List/Set!')
 
-def export_list(file_name, iterable):
+def Export_List(file_name, iterable):
     if os.path.exists(file_name):
         os.remove(file_name)
     with open(file_name, 'w') as f:
         for i in iterable:
             f.write("%s\n" % i)
 
-def read_list(file_name, typ='list'):
+def Read_List(file_name, typ='list'):
     if typ == 'list':
         l = list(open(file_name).read().splitlines())
     elif typ == 'set':
@@ -70,7 +70,7 @@ def read_list(file_name, typ='list'):
         sys.exit('Error: Type Must be List/Set!')
     return l
 
-def size_of_files(file_list):
+def Size_Of_Files(file_list):
     ### Returns Size of Files in Bytes
     size = 0
     for f in file_list:
@@ -78,26 +78,35 @@ def size_of_files(file_list):
         except: pass
     return size
 
+def Trim_Dir(file_list):
+    trim = {p.split('/')[-1] for p in file_list}
+    return trim
+
+def Replace_Spaces(file_list):
+    trim = {s.strip().replace(' ', '-') for s in file_list}
+    return trim
+
 ######
 ### Terminal Commands
 ######
-def escape_bash(astr):
+def Escape_Bash(astr):
     return re.sub("(!| |\$|#|&|\"|\'|\(|\)|\||<|>|`|\\\|;)", r"\\\1", astr)
 
-def os_distro():
+def Distro_Name():
+    ### Returns Distro Name From /etc/os-release
     os_name = subprocess.check_output('cat /etc/os-release | grep PRETTY_NAME= | cut -c 13-', shell=True)
     return str(os_name)[2:-3]
 
-def sed_replace(pattern, file_path):
+def Sed_Replace(pattern, file_path):
     os.system("sed -e'" + pattern + "' -i " + file_path)
 
-def uncomment_line_sed(pattern, file_path, sudo):
+def Uncomment_Line_Sed(pattern, file_path, sudo):
     if sudo == True:
         os.system("sudo sed -e'/" + pattern + "/s/^#//g' -i " + file_path)
     elif sudo == False:
         os.system("sed -e'/" + pattern + "/s/^#//g' -i " + file_path)
 
-def comment_line_sed(pattern, file_path, sudo):
+def Comment_Line_Sed(pattern, file_path, sudo):
     if sudo == True:
         os.system("sudo sed -e'/" + pattern + "/s/^#*/#/g' -i " + file_path)
     elif sudo == False:

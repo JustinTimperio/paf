@@ -1,11 +1,11 @@
 #! /usr/bin/env python3
-#### Archive Commands - v1.0
-import os, sys, subprocess, gzip, tarfile, shutil, hashlib, re, requests
+#### Archive Commands - v2.0
+import os, gzip, tarfile, shutil, hashlib
 
 #######################
 ### Gzip and Tar Functions 
 ###################
-def gz_c(path, rm=False):
+def GZ_C(path, rm=False):
     with open(path, 'rb') as f:
         with gzip.open(path + '.gz', 'wb') as gz:
             shutil.copyfileobj(f, gz)
@@ -14,7 +14,7 @@ def gz_c(path, rm=False):
     if rm == False:
         return
 
-def gz_d(path, rm=False):
+def GZ_D(path, rm=False):
     with gzip.open(path, 'rb') as gz:
         with open(path[:-3], 'wb') as f:
             shutil.copyfileobj(gz, f)
@@ -23,7 +23,7 @@ def gz_d(path, rm=False):
     if rm == False:
         return
 
-def tar_dir(path, rm=False):
+def Tar_Dir(path, rm=False):
     with tarfile.open(path + '.tar', 'w') as tar:
         for f in search_fs(path):
             tar.add(f, f[len(path):])
@@ -32,7 +32,7 @@ def tar_dir(path, rm=False):
     if rm == False:
         return
 
-def untar_dir(path, rm=False):
+def Untar_Dir(path, rm=False):
     with tarfile.open(path, 'r:') as tar:
         tar.extractall(path[:-4])
     if rm == True:
@@ -40,7 +40,7 @@ def untar_dir(path, rm=False):
     if rm == False:
         return
 
-def checksum_file(file_path):
+def Checksum_File(file_path):
     if not os.path.exists(file_path):
         return str(file_path + ' : FILE MISSING!')
     size = os.path.getsize(file_path)

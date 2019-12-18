@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
-#### Core Functions - v1.0
-import os, sys, subprocess, gzip, tarfile, shutil, hashlib, re, requests
+#### Core Functions - v2.0
+import re, math
 
 def prError(text): print("\u001b[31;1m{}\033[00m" .format(text))
 def prSuccess(text): print("\u001b[32;1m{}\033[00m" .format(text))
@@ -13,15 +13,15 @@ def prAdded(text): print("\033[94m{}\033[00m" .format(text))
 ######
 ## Basic Functions
 ######
-def date_to_today(year, month, day, set_name):
+def Date_To_Today(year, month, day):
     import datetime
     start_date = datetime.date(year, month, day)
     end_date = datetime.date.today() - datetime.timedelta(days=1)
     date_delta = abs((start_date - datetime.date.today()).days)
-    list_name = {str(end_date - datetime.timedelta(days=x)) for x in range(0, date_delta)}
-    return set_name
+    date_list = [str(end_date - datetime.timedelta(days=x)) for x in range(0, date_delta)]
+    return date_list
 
-def yn_frame(prompt):
+def YN_Frame(prompt):
     while True:
         yn = input(prompt + ' (y/n):')
         if yn.lower().strip() in ['y','yes']:
@@ -31,7 +31,7 @@ def yn_frame(prompt):
         else:
            print('Please Respond With Yes/No!')
 
-def multi_choice_frame(options):
+def Multi_Choice_Frame(options):
     ordered_list = list(options)
     counter = 1
     while True:
@@ -47,7 +47,7 @@ def multi_choice_frame(options):
             counter = 1
             print('No Validate INT Given!')
 
-def read_between(start, end, iterable, re_flag=False):
+def Read_Between(start, end, iterable, re_flag=False):
     lines = list()
     flag = None
 
@@ -64,7 +64,6 @@ def read_between(start, end, iterable, re_flag=False):
         return lines
 
     elif re_flag == True:
-        import re
         for l in iterable:
             if re.findall(re.escape(start.lower()), l.lower()):
                 flag=True
@@ -76,8 +75,7 @@ def read_between(start, end, iterable, re_flag=False):
                 lines.append(l)
         return lines
 
-def convert_size(size_bytes):
-    import math
+def Convert_Size(size_bytes):
     if size_bytes == 0:
         return "0B"
     size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
