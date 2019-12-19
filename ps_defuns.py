@@ -36,13 +36,15 @@ def Multi_Choice_Frame(options):
     counter = 1
     while True:
         for o in ordered_list:
-            print(o + ': (' + str(counter) + ')')
+            print('(' + str(counter) + ') ' + o)
             counter += 1
         selection = input('Enter Your Selection With an INT: ').strip()
 
         if re.findall(r'^([1-9]|0[1-9]|[1-9][0-9]|[1-9][1-9][0-9])$', selection):
             if int(selection) < counter:
                 return ordered_list[int(selection) - 1]
+        elif selection.strip() == 'exit' or 'quit':
+            return False
         else:
             counter = 1
             print('No Validate INT Given!')
