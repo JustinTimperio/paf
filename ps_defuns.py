@@ -35,7 +35,7 @@ def YN_Frame(prompt):
 def Multi_Choice_Frame(options):
     '''Lets a user select between arbitrary number of options.
     Returns value the user selects. Input `exit` or `quit` to return False.'''
-    ordered_list = list(options)
+    ordered_list = list(options).sort()
     counter = 1
     while True:
         for o in ordered_list:
