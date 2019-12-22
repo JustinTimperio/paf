@@ -1,16 +1,17 @@
 #! /usr/bin/env python3
-#### Network Commands - v1.0
-import os, sys, subprocess, gzip, tarfile, shutil, hashlib, re, requests
+# Network Commands - v1.0
+import socket
+import requests
 
-######
-### Network and Web Fuctions
-######
 
-def dl_url(url, file_name):
+def DL_URL(url, file_path):
+    '''Downloads a url to a filepath using requests module.'''
     r = requests.get(url, allow_redirects=True)
-    open(file_name, 'wb').write(r.content)
+    open(file_path, 'wb').write(r.content)
 
-def is_url_downloadable(url):
+
+def Is_URL_Downloadable(url):
+    '''Check if a url is downloadable by requests. Returns True if yes, False if no.'''
     h = requests.head(url, allow_redirects=True)
     header = h.headers
     content_type = header.get('content-type')
@@ -20,8 +21,9 @@ def is_url_downloadable(url):
         return False
     return True
 
-def get_local_ip():
-    import socket
+
+def Local_IP():
+    '''Returns the local IP of the system.'''
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         # doesn't even have to be reachable
