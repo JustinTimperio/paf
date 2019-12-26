@@ -3,6 +3,38 @@
 import datetime as dt
 import re
 import math
+import subprocess
+import sys
+
+
+def prError(text): print("\u001b[31;1m{}\033[00m" .format(text))
+def prSuccess(text): print("\u001b[32;1m{}\033[00m" .format(text))
+def prWorking(text): print("\033[33m{}\033[00m" .format(text))
+def prWarning(text): print("\033[93m{}\033[00m" .format(text))
+def prChanged(text): print("\u001b[35m{}\033[00m" .format(text))
+def prRemoved(text): print("\033[31m{}\033[00m" .format(text))
+def prAdded(text): print("\033[94m{}\033[00m" .format(text))
+
+
+def Write_To_Log(func, output, log_file):
+    log = str(dt.datetime.now().strftime("%Y/%m/%d-%H:%M:%S") + ' : ' + func + ' : ' + output)
+    subprocess.Popen('echo "' + log + '"| sudo tee -a ' + log_file + ' > /dev/null', shell=True)
+
+
+def Start_Log(func, log_file):
+    subprocess.Popen('echo ================================ | sudo tee -a ' + log_file + ' > /dev/null', shell=True)
+    Write_To_Log(func, 'Started Logging Session', log_file)
+
+
+def End_Log(func, log_file):
+    Write_To_Log(func, 'Ended Logging Session', log_file)
+
+
+def Abort_With_Log(func, output, message, log_file):
+    Write_To_Log(func, output, log_file)
+    End_Log(func, log_file)
+    prError(message)
+    sys.exit()
 
 
 def Replace_Spaces(lst):

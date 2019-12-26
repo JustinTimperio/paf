@@ -36,14 +36,14 @@ def RM_File(file_path, sudo):
         sys.exit('Error: Sudo Must be True/False!')
 
 
-def MK_Dir(dir, sudo):
+def MK_Dir(dir_path, sudo):
     '''Uses os.system calls to mkdir dirs. Allows sudo.'''
     if sudo is True:
-        if not os.path.exists(dir):
-            os.system("sudo mkdir " + dir)
+        if not os.path.exists(dir_path):
+            os.system("sudo mkdir " + dir_path)
     elif sudo is False:
-        if not os.path.exists(dir):
-            os.system("mkdir " + dir)
+        if not os.path.exists(dir_path):
+            os.system("mkdir " + dir_path)
     else:
         sys.exit('Error: Sudo Must be True/False!')
 
@@ -54,7 +54,7 @@ def RM_Dir(dir_path, sudo):
         if os.path.exists(dir_path):
             os.system('sudo rm -r ' + dir_path)
     elif sudo is False:
-        if not os.path.exists(dir):
+        if os.path.exists(dir_path):
             os.system('rm -r ' + dir_path)
     else:
         sys.exit('Error: Sudo Must be True/False!')
