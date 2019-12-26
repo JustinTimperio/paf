@@ -3,7 +3,7 @@
 import datetime as dt
 import re
 import math
-import subprocess
+import os
 import sys
 
 
@@ -18,11 +18,11 @@ def prAdded(text): print("\033[94m{}\033[00m" .format(text))
 
 def Write_To_Log(func, output, log_file):
     log = str(dt.datetime.now().strftime("%Y/%m/%d-%H:%M:%S") + ' : ' + func + ' : ' + output)
-    subprocess.Popen('echo "' + log + '"| sudo tee -a ' + log_file + ' > /dev/null', shell=True)
+    os.system('echo "' + log + '"| sudo tee -a ' + log_file + ' > /dev/null')
 
 
 def Start_Log(func, log_file):
-    subprocess.Popen('echo ================================ | sudo tee -a ' + log_file + ' > /dev/null', shell=True)
+    os.system('echo ================================ | sudo tee -a ' + log_file + ' > /dev/null')
     Write_To_Log(func, 'Started Logging Session', log_file)
 
 
