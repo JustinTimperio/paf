@@ -17,7 +17,7 @@ def prAdded(text): print("\033[94m{}\033[00m" .format(text))
 
 
 def Write_To_Log(func, output, log_file):
-    log = str(dt.datetime.now().strftime("%Y/%m/%d-%H:%M:%S") + ' : ' + func + ' : ' + output)
+    log = str(dt.datetime.now().strftime("%Y/%m/%d-%H:%M:%S.%f") + ' : ' + func + ' : ' + output)
     os.system('echo "' + log + '"| sudo tee -a ' + log_file + ' > /dev/null')
 
 
