@@ -55,7 +55,7 @@ def Date_To_Today(year, month, day):
 def YN_Frame(prompt):
     '''Standard Y/N input frame. Returns True for Yes, False for No.'''
     while True:
-        yn = input(prompt + ' (y/n):')
+        yn = input('\033[1m' + prompt + ' (y/n):' + '\033[0m')
         if yn.lower().strip() in ['y', 'yes']:
             return True
         elif yn.lower().strip() in ['no', 'n']:
@@ -67,13 +67,13 @@ def YN_Frame(prompt):
 def Multi_Choice_Frame(options):
     '''Lets a user select between arbitrary number of options.
     Returns value the user selects. Input `exit` or `quit` to return False.'''
-    ordered_list = list(options).sort()
+    ordered_list = sorted(list(options))
     counter = 1
     while True:
         for o in ordered_list:
             print('(' + str(counter) + ') ' + o)
             counter += 1
-        ans = input('Enter Your Selection With an INT: ').strip()
+        ans = input('\033[1m' + 'Enter Your Selection With an INT: ' + '\033[0m').strip()
 
         if re.findall(r'^([1-9]|0[1-9]|[1-9][0-9]|[1-9][1-9][0-9])$', ans):
             if int(ans) < counter:
