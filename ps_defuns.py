@@ -67,19 +67,16 @@ def YN_Frame(prompt):
 def Multi_Choice_Frame(options):
     '''Lets a user select between arbitrary number of options.
     Returns value the user selects. Input `exit` or `quit` to return False.'''
-    ordered_list = sorted(list(options))
+    c_list = list(options)
     counter = 1
     while True:
-        for o in ordered_list:
+        for o in c_list:
             print('(' + str(counter) + ') ' + o)
             counter += 1
         ans = input('\033[1m' + 'Enter Your Selection With an INT: ' + '\033[0m').strip()
 
-        if re.findall(r'^([1-9]|0[1-9]|[1-9][0-9]|[1-9][1-9][0-9])$', ans):
-            if int(ans) < counter:
-                return ordered_list[int(ans) - 1]
-        elif ans.strip() == 'exit' or 'quit':
-            return False
+        if re.findall(r'^([1-9]|0[1-9]|[1-9][0-9]|[1-9][1-9][0-9])$', ans) and int(ans) < counter:
+            return c_list[int(ans) - 1]
         else:
             counter = 1
             print('No Validate INT Given!')
