@@ -13,6 +13,19 @@ def Open_Permissions(path):
     '''Chmod -R 777 path.'''
     os.system("sudo chmod -R 777 " + path)
 
+def Am_I_Root():
+    '''Return True if Root, False if Userspace'''
+    if os.getuid == 0:
+        return True
+    else:
+        return False
+
+def Require_Root():
+    '''Abort if not root.'''
+    if Am_I_Root() is True:
+        return
+    else:
+        sys.exit('Critical Error: Must Be Run As Root!')
 
 def Search_FS(path, typ='list'):
     '''Uses os.path.join() and os.walk() to search through directories.'''
