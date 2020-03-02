@@ -9,23 +9,19 @@ import re
 # OS Commands and Short-Cuts
 ######
 
-def Open_Permissions(path):
-    '''Chmod -R 777 path.'''
-    os.system("sudo chmod -R 777 " + path)
+
+def Change_Permissions(path, perm_num):
+    '''Change Permissions Recursively on Path.'''
+    os.system("sudo chmod -R " + perm_num + " " + path)
+
 
 def Am_I_Root():
     '''Return True if Root, False if Userspace'''
-    if os.getuid == 0:
+    if os.getuid() == 0:
         return True
     else:
         return False
 
-def Require_Root():
-    '''Abort if not root.'''
-    if Am_I_Root() is True:
-        return
-    else:
-        sys.exit('Critical Error: Must Be Run As Root!')
 
 def Search_FS(path, typ='list'):
     '''Uses os.path.join() and os.walk() to search through directories.'''
@@ -72,9 +68,11 @@ def RM_Dir(dir_path, sudo):
     else:
         sys.exit('Error: Sudo Must be True/False!')
 
+
 ############
 # File Commands
 ######
+
 
 def Export_List(file_name, iterable):
     '''Export list or set to file name.'''
@@ -114,6 +112,7 @@ def Trim_Dir(file_list):
 ############
 # Terminal Commands
 ######
+
 
 def Escape_Bash(astr):
     '''Uses regex sub to escape bash input.'''

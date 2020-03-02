@@ -30,13 +30,6 @@ def End_Log(func, log_file):
     Write_To_Log(func, 'Ended Logging Session', log_file)
 
 
-def Abort_With_Log(func, output, message, log_file):
-    Write_To_Log(func, output, log_file)
-    End_Log(func, log_file)
-    prError(message)
-    sys.exit()
-
-
 def Replace_Spaces(lst):
     '''Replaces all ` ` with `_` in each string in list.'''
     trim = {s.strip().replace(' ', '-') for s in lst}
