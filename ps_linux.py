@@ -143,24 +143,31 @@ def Comment_Line_Sed(pattern, file_path, sudo):
     elif sudo is False:
         os.system("sed -e'/" + pattern + "/s/^#*/#/g' -i " + file_path)
 
+
 ############
 # Linux System Package Commands
 ######
 
+
 def pacman(package, arg='-S'):
     os.system("sudo pacman " + arg + " " + package)
+
 
 def yum(package, arg='install'):
     os.system("sudo yum " + arg + " " + package)
 
+
 def apt(package, arg='install'):
     os.system("sudo apt-get " + arg + " " + package)
+
 
 def zypper(package, arg='install'):
     os.system("sudo zypper " + arg + " " + package)
 
+
 def pip_install(packages, arg='install'):
     os.system("sudo pip " + arg + " " + packages)
+
 
 def pacaur_install(packages, arg='-S'):
     os.system("pacaur " + arg + packages)

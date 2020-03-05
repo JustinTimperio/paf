@@ -4,16 +4,6 @@ import datetime as dt
 import re
 import math
 import os
-import sys
-
-
-def prError(text): print("\u001b[31;1m{}\033[00m" .format(text))
-def prSuccess(text): print("\u001b[32;1m{}\033[00m" .format(text))
-def prWorking(text): print("\033[33m{}\033[00m" .format(text))
-def prWarning(text): print("\033[93m{}\033[00m" .format(text))
-def prChanged(text): print("\u001b[35m{}\033[00m" .format(text))
-def prRemoved(text): print("\033[31m{}\033[00m" .format(text))
-def prAdded(text): print("\033[94m{}\033[00m" .format(text))
 
 
 def Write_To_Log(func, output, log_file):
@@ -116,3 +106,26 @@ def Convert_Size(size_bytes):
     power = math.pow(1024, i)
     size = round(size_bytes / power, 2)
     return "{} {}".format(size, size_name[i])
+
+
+# Color Print Output
+def prError(text):
+    print("\u001b[31;1m{}\033[00m" .format(text))
+
+def prSuccess(text):
+    print("\u001b[32;1m{}\033[00m" .format(text))
+
+def prWarning(text):
+    print("\u001b[33;1m{}\033[0m" .format(text))
+
+def prBold(text):
+    print("\u001b[37;1m{}\u001b[0m" .format(text))
+
+def prChanged(text):
+    print("\u001b[35m{}\033[00m" .format(text))
+
+def prRemoved(text):
+    print("\033[31m{}\033[00m" .format(text))
+
+def prAdded(text):
+    print("\033[94m{}\033[00m" .format(text))
