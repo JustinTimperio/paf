@@ -7,12 +7,12 @@ import os
 
 
 def Write_To_Log(func, output, log_file):
-    log = str(dt.datetime.now().strftime("%Y/%m/%d-%H:%M:%S.%f") + ' : ' + func + ' : ' + output)
-    os.system('echo "' + log + '"| sudo tee -a ' + log_file + ' > /dev/null')
+    log = str('[' + dt.datetime.now().strftime("%Y/%m/%d-%H:%M:%S.%f") + '] ' + func + ' : ' + output)
+    os.system('echo "' + log + '" >> ' + log_file)
 
 
 def Start_Log(func, log_file):
-    os.system('echo ================================ | sudo tee -a ' + log_file + ' > /dev/null')
+    os.system('echo ================================ >> ' + log_file)
     Write_To_Log(func, 'Started Logging Session', log_file)
 
 
@@ -106,6 +106,15 @@ def Convert_Size(size_bytes):
     power = math.pow(1024, i)
     size = round(size_bytes / power, 2)
     return "{} {}".format(size, size_name[i])
+
+
+def max_threads(thread_target):
+    '''Returns the max # of threads availble for a target process pool.'''
+    cores = os.cpu_count()
+    if cores >= thread_target:
+        return thread_target
+    else:
+        return cores
 
 
 # Color Print Output
