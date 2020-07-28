@@ -7,17 +7,18 @@ import os
 
 
 def Write_To_Log(func, output, log_file):
-    log = str('[' + dt.datetime.now().strftime("%Y/%m/%d-%H:%M:%S.%f") + '] ' + func + ' : ' + output)
+    log = str('[' + dt.datetime.now().strftime("%H:%M:%S.%f") + '] ' + func + ': ' + output)
     os.system('echo "' + log + '" >> ' + log_file)
 
 
 def Start_Log(func, log_file):
-    os.system('echo ================================ >> ' + log_file)
+    os.system('echo "======================== ' + dt.datetime.now().strftime("%Y/%m/%d") + ' ========================" >> ' + log_file)
     Write_To_Log(func, 'Started Logging Session', log_file)
 
 
 def End_Log(func, log_file):
     Write_To_Log(func, 'Ended Logging Session', log_file)
+    os.system('echo -e >> ' + log_file)
 
 
 def Replace_Spaces(lst):
