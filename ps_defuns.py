@@ -16,9 +16,13 @@ def Start_Log(func, log_file):
     Write_To_Log(func, 'Started Logging Session', log_file)
 
 
-def End_Log(func, log_file):
+def End_Log(func, log_file, log_length=0):
     Write_To_Log(func, 'Ended Logging Session', log_file)
     os.system('echo -e >> ' + log_file)
+    if log_length > 0:
+        pass
+    else:
+        os.system('cat ' + log_file + ' | tail -n ' + str(log_length) + ' > ' + log_file)
 
 
 def Replace_Spaces(lst):
@@ -49,8 +53,10 @@ def YN_Frame(prompt):
 
 
 def Multi_Choice_Frame(options):
-    '''Lets a user select between arbitrary number of options.
-    Returns value the user selects. Input `exit` or `quit` to return False.'''
+    '''
+    Lets a user select between arbitrary number of options.
+    Returns value the user selects. Input `exit` or `quit` to return False.
+    '''
     c_list = list(options)
     counter = 1
     while True:
@@ -67,34 +73,36 @@ def Multi_Choice_Frame(options):
 
 
 def Read_Between(start, end, iterable, re_flag=False):
-    '''Returns list of lines found between two strings/values.
+    '''
+    Returns list of lines found between two strings/values.
     If re_flag is False, direct string comparison will be used.
-    If re_flag is True, regex will be used to find start and end strings.'''
+    If re_flag is True, regex will be used to find start and end strings.
+    '''
     lines = list()
     flag = None
 
     if re_flag is False:
-        for l in iterable:
-            if l is start:
+        for line in iterable:
+            if line is start:
                 flag = True
-            elif l is end:
+            elif line is end:
                 flag = False
             elif flag is None or flag is False:
                 pass
             elif flag is True:
-                lines.append(l)
+                lines.append(line)
         return lines
 
     elif re_flag is True:
-        for l in iterable:
-            if re.findall(re.escape(start.lower()), l.lower()):
+        for line in iterable:
+            if re.findall(re.escape(start.lower()), line.lower()):
                 flag = True
-            elif re.findall(re.escape(end.lower()), l.lower()):
+            elif re.findall(re.escape(end.lower()), line.lower()):
                 flag = False
             elif flag is None or flag is False:
                 pass
             elif flag is True:
-                lines.append(l)
+                lines.append(line)
         return lines
 
 
