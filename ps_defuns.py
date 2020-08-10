@@ -55,7 +55,7 @@ def YN_Frame(prompt):
 def Multi_Choice_Frame(options):
     '''
     Lets a user select between arbitrary number of options.
-    Returns value the user selects. Input `exit` or `quit` to return False.
+    Returns value the user selects. Input `exit` or `quit` or `skip` to return False.
     '''
     c_list = list(options)
     counter = 1
@@ -67,9 +67,11 @@ def Multi_Choice_Frame(options):
 
         if re.findall(r'^([1-9]|0[1-9]|[1-9][0-9]|[1-9][1-9][0-9])$', ans) and int(ans) < counter:
             return c_list[int(ans) - 1]
+        elif ans.lower() == 'quit' or ans.lower() == 'exit' or ans.lower() == 'skip':
+            return False
         else:
             counter = 1
-            print('No Validate INT Given!')
+            print('Validate Int NOT Given! (Type `exit` to Skip)')
 
 
 def Read_Between(start, end, iterable, re_flag=False):
