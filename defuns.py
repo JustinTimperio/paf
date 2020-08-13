@@ -6,6 +6,12 @@ import os
 import sys
 
 
+def Replace_Spaces(lst):
+    '''Replaces all ` ` with `_` in each string in list.'''
+    trim = {s.strip().replace(' ', '-') for s in lst}
+    return trim
+
+
 def Date_To_Today(year, month, day):
     '''Returns a list of dates between input date and today.'''
     start_date = dt.date(year, month, day)
@@ -62,7 +68,6 @@ def Size_Of_Files(file_list):
 ############
 # File Commands
 ######
-
 
 def Export_List(file_name, iterable):
     '''Export list or set to file name.'''
