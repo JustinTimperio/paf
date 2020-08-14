@@ -1,27 +1,30 @@
 #! /usr/bin/env python3
-from datetime import datetime
 import os
-from .ps_linux import Escape_Bash
+from datetime import datetime
+
 
 ############
-# OS Commands and Short-Cuts
+# Logging Commands
 ######
 
 
-def Write_To_Log(func, output, log):
+def write_to_log(func, output, log_file):
     log = str('[' + datetime.now().strftime("%H:%M:%S.%f") + '] ' + func + ': ' + output)
-    os.system('echo "' + Escape_Bash(log) + '" >> ' + log)
+    with open(log_file, 'a') as f:
+        f.write(log)
 
 
-def Start_Log(func, log):
-    os.system('echo "======================== ' + datetime.now().strftime("%Y/%m/%d") + ' ========================" >> ' + log)
-    Write_To_Log(func, 'Started Logging Session', log)
+def start_log(func, log_file):
+    start = '======================== ' + datetime.now().strftime("%Y/%m/%d") + ' ========================'
+    write_to_log(func, start, log_file)
+    write_to_log(func, 'Started Logging Session', log_file)
 
 
-def End_Log(func, log, log_length=0):
-    Write_To_Log(func, 'Ended Logging Session', log)
-    os.system('echo -e >> ' + log)
+def end_log(func, log_file, log_length=0):
+    write_to_log(func, 'Ended Logging Session', log_file)
+    os.system('echo -e >> ' + log_file)
     if log_length > 0:
         pass
     else:
-        os.system('cat ' + log + ' | tail -n ' + str(log_length) + ' > ' + log)
+        os.system('cat ' + log_file + ' | tail -n ' + str(log_length) + ' > ' + log_file)
+        write_to_log(func, 'Trimmed Log On Exit', log_file)

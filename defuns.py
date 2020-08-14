@@ -1,19 +1,19 @@
 #! /usr/bin/env python3
-import datetime as dt
+import os
 import re
 import math
-import os
-import sys
+import datetime as dt
 
 
-def Replace_Spaces(lst):
-    '''Replaces all ` ` with `_` in each string in list.'''
-    trim = {s.strip().replace(' ', '-') for s in lst}
-    return trim
+############
+# Assorted Functions
+######
 
 
-def Date_To_Today(year, month, day):
-    '''Returns a list of dates between input date and today.'''
+def date_to_today(year, month, day):
+    '''
+    Returns a list of dates between input date and today.
+    '''
     start_date = dt.date(year, month, day)
     end_date = dt.date.today() - dt.timedelta(days=1)
     delta = abs((start_date - dt.date.today()).days)
@@ -21,8 +21,21 @@ def Date_To_Today(year, month, day):
     return date_list
 
 
-def Convert_Size(size_bytes):
-    '''Converts raw bytes input into human readable format.'''
+def max_threads(thread_target):
+    '''
+    Returns the max number of threads availble for a target process.
+    '''
+    cores = os.cpu_count()
+    if cores >= thread_target:
+        return thread_target
+    else:
+        return cores
+
+
+def convert_size(size_bytes):
+    '''
+    Convert raw byte value into human readable format.
+    '''
     if size_bytes == 0:
         return "0B"
     size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
@@ -32,64 +45,7 @@ def Convert_Size(size_bytes):
     return "{} {}".format(size, size_name[i])
 
 
-def max_threads(thread_target):
-    '''Returns the max # of threads availble for a target process pool.'''
-    cores = os.cpu_count()
-    if cores >= thread_target:
-        return thread_target
-    else:
-        return cores
-
-
-############
-# File System Commands
-######
-
-
-def Search_FS(path, typ='list'):
-    '''Uses os.path.join() and os.walk() to search through directories.'''
-    if typ.lower() in ['list', 'l']:
-        return [os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(path)) for f in fn]
-    elif typ.lower() in ['set', 's']:
-        return {os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(path)) for f in fn}
-    else:
-        sys.exit('Error: Type Must be List/Set!')
-
-
-def Size_Of_Files(file_list):
-    '''Returns Size of Files in Bytes.'''
-    size = 0
-    for f in file_list:
-        try: size += os.path.getsize(f)
-        except Exception: OSError
-    return size
-
-
-############
-# File Commands
-######
-
-def Export_List(file_name, iterable):
-    '''Export list or set to file name.'''
-    if os.path.exists(file_name):
-        os.remove(file_name)
-    with open(file_name, 'w') as f:
-        for i in iterable:
-            f.write("%s\n" % i)
-
-
-def Read_List(file_name, typ='list'):
-    '''Reads file into set or list.'''
-    if typ == 'list':
-        fl = list(open(file_name).read().splitlines())
-    elif typ == 'set':
-        fl = set(open(file_name).read().splitlines())
-    else:
-        sys.exit('Error: Type Must be List/Set!')
-    return fl
-
-
-def Read_Between(start, end, iterable, re_flag=False):
+def read_between(start, end, iterable, re_flag=False):
     '''
     Returns list of lines found between two strings/values.
     If re_flag is False, direct string comparison will be used.

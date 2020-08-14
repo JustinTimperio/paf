@@ -1,8 +1,8 @@
 #! /usr/bin/env python3
 import os
-import sys
-import subprocess
 import re
+import sys
+from .defuns import read_file
 
 
 ############
@@ -10,8 +10,11 @@ import re
 ######
 
 
-def RM_File(file_path, sudo):
-    '''Uses os.system calls to rm file. Allows sudo.'''
+def rm_file(file_path, sudo):
+    '''
+    Uses os.system() to remove files using standard nix commands.
+    The main advatage over os submodule is support for sudo.
+    '''
     if sudo is True:
         if os.path.exists(file_path):
             os.system('sudo rm ' + file_path)
@@ -22,8 +25,11 @@ def RM_File(file_path, sudo):
         sys.exit('Error: Sudo Must be True/False!')
 
 
-def MK_Dir(dir_path, sudo):
-    '''Uses os.system calls to mkdir dirs. Allows sudo.'''
+def mk_dir(dir_path, sudo):
+    '''
+    Uses os.system() to make a directory using standard nix commands.
+    The main advatage over os submodule is support for sudo.
+    '''
     if sudo is True:
         if not os.path.exists(dir_path):
             os.system("sudo mkdir " + dir_path)
@@ -34,8 +40,11 @@ def MK_Dir(dir_path, sudo):
         sys.exit('Error: Sudo Must be True/False!')
 
 
-def RM_Dir(dir_path, sudo):
-    '''Uses os.system calls to rm dirs. Allows sudo.'''
+def rm_dir(dir_path, sudo):
+    '''
+    Uses os.system() to remove a directory using standard nix commands.
+    The main advatage over os submodule is support for sudo.
+    '''
     if sudo is True:
         if os.path.exists(dir_path):
             os.system('sudo rm -r ' + dir_path)
@@ -46,64 +55,96 @@ def RM_Dir(dir_path, sudo):
         sys.exit('Error: Sudo Must be True/False!')
 
 
-def Change_Permissions(path, perm_num):
-    '''Change Permissions Recursively on Path.'''
+def change_permissions(path, perm_num):
+    '''
+    Change permissions recursively on path.
+    '''
     os.system("sudo chmod -R " + perm_num + " " + path)
 
 
-def Basename(file_list):
-    '''Returns a trim\'ed list of unique file names. Will remove duplicates names.
-    Provides faster file name trim than os.basename()'''
-    trim = {p.split('/')[-1] for p in file_list}
-    return trim
+def basenames(file_list):
+    '''
+    Returns a list of unique file names. Will remove duplicates names.
+    Provides faster file name trim than looping with os.basename()
+    '''
+    return {p.split('/')[-1] for p in file_list}
 
 
 ############
-# Terminal Commands
+# Terminal
 ######
 
 
-def Escape_Bash(astr):
-    '''Uses regex sub to escape bash input.'''
+def escape_bash_input(astr):
+    '''
+    Uses regex subsitution to safely escape bash input.
+    '''
     return re.sub("(!| |\$|#|&|\"|\'|\(|\)|\||<|>|`|\\\|;)", r"\\\1", astr)
 
 
-def Sed_Replace(pattern, file_path):
+def sed_replace(pattern, file_path):
     os.system("sed -e'" + pattern + "' -i " + file_path)
 
 
-def Uncomment_Line_Sed(pattern, file_path, sudo):
+def sed_uncomment_line(pattern, file_path, sudo):
+    '''
+    Uncomments lines using sed. This can safely be run over a file multiple
+    times without adverse effects. This is ungodly helpful when modifing
+    linux config files.
+    '''
     if sudo is True:
         os.system("sudo sed -e'/" + pattern + "/s/^#//g' -i " + file_path)
     elif sudo is False:
         os.system("sed -e'/" + pattern + "/s/^#//g' -i " + file_path)
+    else:
+        sys.exit('Error: Sudo Must be True/False!')
 
 
-def Comment_Line_Sed(pattern, file_path, sudo):
+def sed_comment_line(pattern, file_path, sudo):
+    '''
+    Comments lines using sed. This can safely be run over a file multiple
+    times without adverse effects. This is ungodly helpful when modifing
+    linux config files.
+    '''
     if sudo is True:
         os.system("sudo sed -e'/" + pattern + "/s/^#*/#/g' -i " + file_path)
     elif sudo is False:
         os.system("sed -e'/" + pattern + "/s/^#*/#/g' -i " + file_path)
+    else:
+        sys.exit('Error: Sudo Must be True/False!')
 
 
 ############
-# Linux System Package Commands
+# Linux Commands
 ######
 
 
-def Am_I_Root():
-    '''Return True if Root, False if Userspace'''
+def am_i_root():
+    '''
+    Checks if python was run with sudo or as root.
+    Returns True if root and False if userspace.
+    '''
     if os.getuid() == 0:
         return True
     else:
         return False
 
 
-def Distro_Name():
-    '''Returns Distro Name From /etc/os-release'''
-    os_name = subprocess.check_output('cat /etc/os-release | grep PRETTY_NAME= | cut -c 13-', shell=True)
-    pretty_name = str(os_name)[2:-3]
-    return pretty_name
+def distro_name():
+    '''
+    Returns distrbution information from /etc/os-release.
+    '''
+    release = read_file('/etc/os-release')
+    version = 'none'
+
+    for line in release:
+        if line.startswith('ID='):
+            name = line[3:].replace('"', '')
+        elif line.startswith('VERSION_ID='):
+            version = line[11:].replace('"', '')
+
+    del release
+    return (name, version)
 
 
 ############
@@ -131,5 +172,5 @@ def pip_install(packages, arg='install'):
     os.system("sudo pip " + arg + " " + packages)
 
 
-def pacaur_install(packages, arg='-S'):
-    os.system("pacaur " + arg + packages)
+def yay_install(packages, arg='-S'):
+    os.system("yay " + arg + packages)
