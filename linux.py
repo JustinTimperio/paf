@@ -1,8 +1,10 @@
 #! /usr/bin/env python3
-import os
 import re
+import os
 import sys
-from .defuns import read_file
+
+# Local Files
+from .file import read_file
 
 
 ############
@@ -60,6 +62,13 @@ def change_permissions(path, perm_num):
     Change permissions recursively on path.
     '''
     os.system("sudo chmod -R " + perm_num + " " + path)
+
+
+def basename(path):
+    '''
+    Provides faster file name trim than os.basename()
+    '''
+    return path.split('/')[-1]
 
 
 def basenames(file_list):

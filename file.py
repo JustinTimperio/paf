@@ -4,12 +4,13 @@ import sys
 import hashlib
 import multiprocessing
 
+
 ############
 # File System Commands
 ######
 
 
-def search_fs(path, typ='set'):
+def search_dir(path, typ='set'):
     '''
     Scans a path recursivly and returns a list of files.
     Uses os.path.join() and os.walk().
@@ -20,6 +21,15 @@ def search_fs(path, typ='set'):
         return {os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(path)) for f in fn}
     else:
         sys.exit('Error: Type Must be List/Set!')
+
+
+def search_dirs(paths):
+    '''
+    '''
+    files = set()
+    for p in paths:
+        files.update(search_dir(p, typ='set'))
+    return files
 
 
 def size_of_files(file_list):
@@ -38,6 +48,7 @@ def size_of_files(file_list):
 ############
 # File Commands
 ######
+
 
 def export_iterable(file_name, iterable):
     '''
@@ -75,9 +86,12 @@ def checksum_file(file_path):
     Returns a tuple with [0] == path and [1] == checksum.
     '''
     if not os.path.exists(file_path):
-        return (file_path, 'FILE MISSING!')
+        return (file_path, 'MISSING!')
     else:
-        size = os.path.getsize(file_path)
+        try:
+            size = os.path.getsize(file_path)
+        except Exception:
+            return (file_path, 'UNREADABLE!')
 
     if size == 0:
         return (file_path, '0')
@@ -96,7 +110,7 @@ def checksum_file(file_path):
             return (file_path, str(m.hexdigest()))
 
 
-def checksum_file_list(paths, queue_depth=os.cpu_count()):
+def checksum_file_list(paths, queue_depth=os.cpu_count(), output='Checksumming Files'):
     '''
     Checksum all files in paths using mp.pool then return results.
     Returns a set of tuples with paths and checksums.
@@ -105,6 +119,6 @@ def checksum_file_list(paths, queue_depth=os.cpu_count()):
 
     with multiprocessing.Pool(queue_depth) as pool:
         sums = set(tqdm.tqdm(pool.imap(checksum_file, paths),
-                             total=len(paths), desc='Checksumming Files'))
+                             total=len(paths), desc=output))
 
     return sums
