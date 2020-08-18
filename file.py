@@ -74,6 +74,19 @@ def read_file(file_name, typ='list'):
     return fl
 
 
+#  def export_dict(path):
+    #  '''
+    #  '''
+#
+#
+#  def read_dict(path):
+    #  '''
+    #  '''
+    #  raw = read_file(path, typ='list')
+    #  for line in raw:
+        #  if line.strip().startswith('#'):
+            #  pass
+
 ############
 # Checksum Functions
 ######
@@ -110,7 +123,7 @@ def checksum_file(file_path):
             return (file_path, str(m.hexdigest()))
 
 
-def checksum_file_list(paths, queue_depth=os.cpu_count(), output='Checksumming Files'):
+def checksum_files(paths, queue_depth=os.cpu_count(), output='Checksumming Files'):
     '''
     Checksum all files in paths using mp.pool then return results.
     Returns a set of tuples with paths and checksums.

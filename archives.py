@@ -4,15 +4,12 @@ import gzip
 import shutil
 import tarfile
 import multiprocessing
-
-# Local Files
-from .file import search_fs
+from .file import search_dir
 
 
 ############
 # Core Archive Functions
 ######
-
 
 def gz_c(path, rm=False):
     with open(path, 'rb') as f:
@@ -36,7 +33,7 @@ def gz_d(path, rm=False):
 
 def tar_dir(path, rm=False):
     with tarfile.open(path + '.tar', 'w') as tar:
-        for f in search_fs(path):
+        for f in search_dir(path):
             tar.add(f, f[len(path):])
     if rm is True:
         shutil.rmtree(path)
@@ -57,7 +54,6 @@ def untar_dir(path, rm=False):
 # Muti-Threaded Functions
 ######
 
-
 def gztar_c(dir_path, queue_depth=round(os.cpu_count()*.75), rmbool=True):
     '''
     Compress files individually in a dir using mp.pool, then tar files.
@@ -65,7 +61,7 @@ def gztar_c(dir_path, queue_depth=round(os.cpu_count()*.75), rmbool=True):
     '''
     import tqdm
 
-    files = search_fs(dir_path)
+    files = search_dir(dir_path)
     with multiprocessing.Pool(queue_depth) as pool:
         list(tqdm.tqdm(pool.imap(gz_c, files), total=len(files), desc='Compressing Files'))
 
@@ -88,6 +84,6 @@ def gztar_d(tar_path, queue_depth=round(os.cpu_count()*.75), rmbool=True):
     if rmbool is True:
         os.remove(tar_path)
 
-    files = search_fs(tar_path[:-4])
+    files = search_dir(tar_path[:-4])
     with multiprocessing.Pool(queue_depth) as pool:
         list(tqdm.tqdm(pool.imap(gz_d, files), total=len(files), desc='Decompressing Files'))

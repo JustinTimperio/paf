@@ -1,12 +1,12 @@
 #! /usr/bin/env python3
 import os
 from datetime import datetime
+from .file import read_file
 
 
 ############
 # Logging Commands
 ######
-
 
 def write_to_log(func, output, log_file):
     log = str('[' + datetime.now().strftime("%H:%M:%S.%f") + '] ' + func + ': ' + output)

@@ -9,6 +9,13 @@ import datetime as dt
 # Assorted Functions
 ######
 
+def replace_spaces(lst, replacement='-'):
+    '''
+    Replaces spaces with the defined replacement string
+    for every occurance and every string in a list.
+    '''
+    return {s.strip().replace(' ', replacement) for s in lst}
+
 
 def date_to_today(year, month, day):
     '''

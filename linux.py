@@ -2,15 +2,12 @@
 import re
 import os
 import sys
-
-# Local Files
 from .file import read_file
 
 
 ############
 # File System Commands
 ######
-
 
 def rm_file(file_path, sudo):
     '''
@@ -83,7 +80,6 @@ def basenames(file_list):
 # Terminal
 ######
 
-
 def escape_bash_input(astr):
     '''
     Uses regex subsitution to safely escape bash input.
@@ -124,9 +120,8 @@ def sed_comment_line(pattern, file_path, sudo):
 
 
 ############
-# Linux Commands
+# Linux System Commands
 ######
-
 
 def am_i_root():
     '''
@@ -159,7 +154,6 @@ def distro_name():
 ############
 # Linux System Package Commands
 ######
-
 
 def pacman(package, arg='-S'):
     os.system("sudo pacman " + arg + " " + package)
