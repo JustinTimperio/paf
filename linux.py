@@ -6,6 +6,21 @@ from .file import read_file
 
 
 ############
+# Linux System Commands
+######
+
+def am_i_root():
+    '''
+    Checks if python was run with sudo or as root.
+    Returns True if root and False if userspace.
+    '''
+    if os.getuid() == 0:
+        return True
+    else:
+        return False
+
+
+############
 # File System Commands
 ######
 
@@ -52,13 +67,6 @@ def rm_dir(dir_path, sudo):
             os.system('rm -r ' + dir_path)
     else:
         sys.exit('Error: Sudo Must be True/False!')
-
-
-def change_permissions(path, perm_num):
-    '''
-    Change permissions recursively on path.
-    '''
-    os.system("sudo chmod -R " + perm_num + " " + path)
 
 
 def basename(path):
@@ -120,60 +128,84 @@ def sed_comment_line(pattern, file_path, sudo):
 
 
 ############
-# Linux System Commands
+# File and Folder Permissions
 ######
 
-def am_i_root():
+def change_permissions(path, perm_num):
     '''
-    Checks if python was run with sudo or as root.
-    Returns True if root and False if userspace.
+    Change permissions recursively on path.
     '''
-    if os.getuid() == 0:
-        return True
-    else:
-        return False
+    os.system("sudo chmod -R " + perm_num + " " + path)
 
 
-def distro_name():
+def get_file_perms(basedir):
     '''
-    Returns distrbution information from /etc/os-release.
+    For some reason python has no simple inbuilt way to get file permissions
+    without changing the permission. This is gross but it works.
+    Returns set of tuples in format (dir_path, permissions, owner, group)
     '''
-    release = read_file('/etc/os-release')
-    version = 'none'
+    # Fetch Folder Permissions
+    temp_file = '/tmp/folder_perms.txt'
+    os.system('find ' + escape_bash_input(basedir) + ' -type f -exec ls -d -l */ {} + > ' + temp_file)
+    raw_perms = read_file(temp_file)
+    rm_file(temp_file, sudo=False)
 
-    for line in release:
-        if line.startswith('ID='):
-            name = line[3:].replace('"', '')
-        elif line.startswith('VERSION_ID='):
-            version = line[11:].replace('"', '')
+    # Parse Perms
+    perms = set()
+    for x in raw_perms:
+        s = x.split(' ')
+        s = ' '.join([x for x in s if x != '']).split(' ', 8)
+        s = (s[8].replace("'", "").strip(), s[0].strip(), s[2].strip(), s[3].strip())
+        if s[0].startswith('/'):
+            perms.add(s)
 
-    del release
-    return (name, version)
-
-
-############
-# Linux System Package Commands
-######
-
-def pacman(package, arg='-S'):
-    os.system("sudo pacman " + arg + " " + package)
+    return perms
 
 
-def yum(package, arg='install'):
-    os.system("sudo yum " + arg + " " + package)
+def get_folder_perms(basedir):
+    '''
+    For some reason python has no simple inbuilt way to get folder permissions
+    without changing the permission. This is gross but it works.
+    Returns set of tuples in format (dir_path, permissions, owner, group)
+    '''
+    # Fetch Folder Permissions
+    temp_file = '/tmp/folder_perms.txt'
+    os.system('find ' + escape_bash_input(basedir) + ' -type d -exec ls -d -l */ {} + > ' + temp_file)
+    raw_perms = read_file(temp_file)
+    rm_file(temp_file, sudo=False)
+
+    # Parse Perms
+    perms = set()
+    for x in raw_perms:
+        s = x.split(' ')
+        s = ' '.join([x for x in s if x != '']).split(' ', 8)
+        s = (s[8].replace("'", "").strip(), s[0].strip(), s[2].strip(), s[3].strip())
+        if s[0].startswith('/'):
+            perms.add(s)
+
+    return perms
 
 
-def apt(package, arg='install'):
-    os.system("sudo apt-get " + arg + " " + package)
+def perm_to_num(symbolic):
+    '''
+    Convert symbolic permission notation to numeric notation.
+    '''
+    perms = {
+            '---': '0',
+            '--x': '1',
+            '-w-': '2',
+            '-wx': '3',
+            'r--': '4',
+            'r-x': '5',
+            'rw-': '6',
+            'rwx': '7'
+        }
 
+    # Trim Lead If It Exists
+    if len(symbolic) == 10:
+        symbolic = symbolic[1:]
 
-def zypper(package, arg='install'):
-    os.system("sudo zypper " + arg + " " + package)
-
-
-def pip_install(packages, arg='install'):
-    os.system("sudo pip " + arg + " " + packages)
-
-
-def yay_install(packages, arg='-S'):
-    os.system("yay " + arg + packages)
+    # Parse Symbolic to Numeric
+    x = (symbolic[:-6], symbolic[3:-3], symbolic[6:])
+    numeric = perms[x[0]] + perms[x[1]] + perms[x[2]]
+    return numeric

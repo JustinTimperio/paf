@@ -32,6 +32,15 @@ def search_dirs(paths):
     return files
 
 
+def find_subdirs(dirname):
+    '''
+    '''
+    subfolders = [f.path for f in os.scandir(dirname) if f.is_dir()]
+    for dirname in list(subfolders):
+        subfolders.extend(find_subdirs(dirname))
+    return subfolders
+
+
 def size_of_files(file_list):
     '''
     Returns byte sum of files in a list.
@@ -73,19 +82,6 @@ def read_file(file_name, typ='list'):
         sys.exit('Error: Type Must be List/Set!')
     return fl
 
-
-#  def export_dict(path):
-    #  '''
-    #  '''
-#
-#
-#  def read_dict(path):
-    #  '''
-    #  '''
-    #  raw = read_file(path, typ='list')
-    #  for line in raw:
-        #  if line.strip().startswith('#'):
-            #  pass
 
 ############
 # Checksum Functions
