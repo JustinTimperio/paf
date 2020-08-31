@@ -1,6 +1,10 @@
 #! /usr/bin/env python3
 
 
+###############################
+# Application Print Commands
+#############################
+
 def prError(text):
     print("\u001b[31;1m{}\033[00m" .format(text))
 

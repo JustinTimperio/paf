@@ -26,7 +26,7 @@ def am_i_root():
 
 def rm_file(file_path, sudo):
     '''
-    Uses os.system() to remove files using standard nix commands.
+    Uses os.system() to remove files using standard *nix commands.
     The main advatage over os submodule is support for sudo.
     '''
     if sudo is True:
@@ -41,7 +41,7 @@ def rm_file(file_path, sudo):
 
 def mk_dir(dir_path, sudo):
     '''
-    Uses os.system() to make a directory using standard nix commands.
+    Uses os.system() to make a directory using standard *nix commands.
     The main advatage over os submodule is support for sudo.
     '''
     if sudo is True:
@@ -56,7 +56,7 @@ def mk_dir(dir_path, sudo):
 
 def rm_dir(dir_path, sudo):
     '''
-    Uses os.system() to remove a directory using standard nix commands.
+    Uses os.system() to remove a directory using standard *nix commands.
     The main advatage over os submodule is support for sudo.
     '''
     if sudo is True:
@@ -95,10 +95,6 @@ def escape_bash_input(astr):
     return re.sub("(!| |\$|#|&|\"|\'|\(|\)|\||<|>|`|\\\|;)", r"\\\1", astr)
 
 
-def sed_replace(pattern, file_path):
-    os.system("sed -e'" + pattern + "' -i " + file_path)
-
-
 def sed_uncomment_line(pattern, file_path, sudo):
     '''
     Uncomments lines using sed. This can safely be run over a file multiple
@@ -131,46 +127,22 @@ def sed_comment_line(pattern, file_path, sudo):
 # File and Folder Permissions
 ######
 
-def change_permissions(path, perm_num):
+def get_permissions(basedir, typ):
     '''
-    Change permissions recursively on path.
-    '''
-    os.system("sudo chmod -R " + perm_num + " " + path)
-
-
-def get_file_perms(basedir):
-    '''
-    For some reason python has no simple inbuilt way to get file permissions
+    For some reason python has no simple inbuilt way to get file or folder permissions
     without changing the permission. This is gross but it works.
     Returns set of tuples in format (dir_path, permissions, owner, group)
     '''
+    temp_file = '/tmp/get_perms.txt'
+
     # Fetch Folder Permissions
-    temp_file = '/tmp/folder_perms.txt'
-    os.system('find ' + escape_bash_input(basedir) + ' -type f -exec ls -d -l */ {} + > ' + temp_file)
-    raw_perms = read_file(temp_file)
-    rm_file(temp_file, sudo=False)
+    if typ == 'files':
+        os.system('find ' + escape_bash_input(basedir) + ' -type f -exec ls -d -l */ {} + > ' + temp_file)
+    elif typ == 'folders':
+        os.system('find ' + escape_bash_input(basedir) + ' -type d -exec ls -d -l */ {} + > ' + temp_file)
+    else:
+        sys.exit('Error: Type Must Be `Files` or `Folders`!')
 
-    # Parse Perms
-    perms = set()
-    for x in raw_perms:
-        s = x.split(' ')
-        s = ' '.join([x for x in s if x != '']).split(' ', 8)
-        s = (s[8].replace("'", "").strip(), s[0].strip(), s[2].strip(), s[3].strip())
-        if s[0].startswith('/'):
-            perms.add(s)
-
-    return perms
-
-
-def get_folder_perms(basedir):
-    '''
-    For some reason python has no simple inbuilt way to get folder permissions
-    without changing the permission. This is gross but it works.
-    Returns set of tuples in format (dir_path, permissions, owner, group)
-    '''
-    # Fetch Folder Permissions
-    temp_file = '/tmp/folder_perms.txt'
-    os.system('find ' + escape_bash_input(basedir) + ' -type d -exec ls -d -l */ {} + > ' + temp_file)
     raw_perms = read_file(temp_file)
     rm_file(temp_file, sudo=False)
 

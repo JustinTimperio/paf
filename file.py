@@ -10,35 +10,73 @@ import multiprocessing
 ######
 
 
-def search_dir(path, typ='set'):
+def scan_dir(path):
     '''
-    Scans a path recursivly and returns a list of files.
-    Uses os.path.join() and os.walk().
+    Non-recursively return a tuple of files and directories in a path.
     '''
-    if typ.lower() in ['list', 'l']:
-        return [os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(path)) for f in fn]
-    elif typ.lower() in ['set', 's']:
-        return {os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(path)) for f in fn}
-    else:
-        sys.exit('Error: Type Must be List/Set!')
-
-
-def search_dirs(paths):
-    '''
-    '''
+    dirs = set()
     files = set()
-    for p in paths:
-        files.update(search_dir(p, typ='set'))
-    return files
+    for x in os.scandir(path):
+        if x.is_dir():
+            dirs.add(x.path)
+        elif x.is_file():
+            files.add(x.path)
+
+    return(files, dirs)
 
 
-def find_subdirs(dirname):
+def find_subdirs(path):
     '''
+    Recursively return a list of directories in a path(s).
+    This seems to be the fastest implementation possible.
     '''
-    subfolders = [f.path for f in os.scandir(dirname) if f.is_dir()]
-    for dirname in list(subfolders):
-        subfolders.extend(find_subdirs(dirname))
+    # Allow For Single Path or Multiple
+    if type(path) is str:
+        paths = set()
+        paths.add(path)
+    elif type(path) is set or list:
+        paths = path
+    else:
+        sys.exit('Error: Invalid Path Input!')
+
+    subfolders = set()
+    for x in paths:
+        for f in os.scandir(path):
+            if f.is_dir():
+                subfolders.add(f.path)
+
+    for path in set(subfolders):
+        subfolders.update(find_subdirs(path))
+
     return subfolders
+
+
+def find_files(path):
+    '''
+    Scans a path(s) recursivly and return a list of files.
+    This seems to be the fastest implementation possible.
+    '''
+    # Allow For Single Path or Multiple
+    if type(path) is str:
+        paths = set()
+        paths.add(path)
+    elif type(path) is set or list:
+        paths = path
+    else:
+        sys.exit('Error: Invalid Path Input!')
+
+    files = set()
+    dirs = set()
+
+    for x in paths:
+        z = scan_dir(x)
+        files.update(z[0])
+        dirs.update(z[1])
+
+    for d in set(dirs):
+        files.update(find_files(d))
+
+    return files
 
 
 def size_of_files(file_list):
@@ -51,6 +89,7 @@ def size_of_files(file_list):
             size += os.path.getsize(f)
         except Exception:
             OSError
+
     return size
 
 
@@ -59,27 +98,28 @@ def size_of_files(file_list):
 ######
 
 
-def export_iterable(file_name, iterable):
+def export_iterable(file_path, iterable):
     '''
     Export iterable to a file with each entry on a new line.
     '''
-    if os.path.exists(file_name):
-        os.remove(file_name)
-    with open(file_name, 'w') as f:
+    if os.path.exists(file_path):
+        os.remove(file_path)
+    with open(file_path, 'w') as f:
         for i in iterable:
             f.write("%s\n" % i)
 
 
-def read_file(file_name, typ='list'):
+def read_file(file_path, typ='list'):
     '''
     Reads file into set or list.
     '''
-    if typ == 'list':
-        fl = list(open(file_name).read().splitlines())
-    elif typ == 'set':
-        fl = set(open(file_name).read().splitlines())
+    if typ.lower() == 'list':
+        fl = list(open(file_path).read().splitlines())
+    elif typ.lower() == 'set':
+        fl = set(open(file_path).read().splitlines())
     else:
         sys.exit('Error: Type Must be List/Set!')
+
     return fl
 
 
@@ -92,7 +132,7 @@ def checksum_file(file_path):
     '''
     Checksums a file using hashlib.md5(). Reads the file in 250MB chunks.
     Checksum is slow as fuck on anything larger than 5GB so they are ignored.
-    Returns a tuple with [0] == path and [1] == checksum.
+    Returns a tuple with tuple[0] == path and tuple[1] == checksum.
     '''
     if not os.path.exists(file_path):
         return (file_path, 'MISSING!')
@@ -119,15 +159,12 @@ def checksum_file(file_path):
             return (file_path, str(m.hexdigest()))
 
 
-def checksum_files(paths, queue_depth=os.cpu_count(), output='Checksumming Files'):
+def checksum_files(paths, threads=os.cpu_count()):
     '''
     Checksum all files in paths using mp.pool then return results.
     Returns a set of tuples with paths and checksums.
     '''
-    import tqdm
-
-    with multiprocessing.Pool(queue_depth) as pool:
-        sums = set(tqdm.tqdm(pool.imap(checksum_file, paths),
-                             total=len(paths), desc=output))
+    with multiprocessing.Pool(threads) as pool:
+        sums = (pool.imap(checksum_file, paths))
 
     return sums

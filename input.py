@@ -14,15 +14,15 @@ def yn_frame(prompt):
         elif yn.lower().strip() in ['no', 'n']:
             return False
         elif yn.lower().strip() in ['quit', 'exit']:
-            return False
+            return None
         else:
-            print('Please Respond With Yes/No! (Type `exit` or `quit` to Skip)')
+            print('Please Respond With Yes/No! (`exit` or `quit` to Return)')
 
 
 def multi_choice_frame(options):
     '''
     Lets a user select between arbitrary number of input selections.
-    Returns value the user selects. 
+    Returns value the user selects.
     User can input `exit` or `quit` to return False.
     '''
     c_list = list(options)
@@ -36,7 +36,7 @@ def multi_choice_frame(options):
         if re.findall(r'^([1-9]|0[1-9]|[1-9][0-9]|[1-9][1-9][0-9])$', ans) and int(ans) < counter:
             return c_list[int(ans) - 1]
         elif ans.lower() == 'quit' or ans.lower() == 'exit':
-            return False
+            return None
         else:
             counter = 1
-            print('Invalid: Please Select a Validate Integer! (Type `exit` or `quit` to Skip)')
+            print('Invalid: Please Select a Validate Integer! (`exit` or `quit` to Return)')

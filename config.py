@@ -9,6 +9,9 @@ from .file import read_file
 
 def read_config(path, mandatory, optional):
     '''
+    Reads *nix like config files into a dict. Expects a path and two lists.
+    Unless all mandatory values are found the function will force exit.
+    Duplicate values in the source config is not allowed.
     '''
     mand = set()
     opt = set()
