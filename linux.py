@@ -20,6 +20,27 @@ def am_i_root():
         return False
 
 
+def list_normal_users():
+    '''
+    Get info about every normal users.
+    '''
+    usr_list = set()
+
+    for x in read_file('/etc/login.defs'):
+        if x.startswith('UID_MIN'):
+            min_uid = int(x.split('\t')[-1].strip())
+        if x.startswith('UID_MAX'):
+            max_uid = int(x.split('\t')[-1].strip())
+    usr_range = range(min_uid, max_uid + 1)
+
+    for x in read_file('/etc/passwd'):
+        entry = tuple(x.split(':'))
+        if int(entry[2]) in usr_range:
+            usr_list.add(entry)
+
+    return usr_list
+
+
 ############
 # File System Commands
 ######
