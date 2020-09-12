@@ -1,6 +1,8 @@
 #! /usr/bin/env python3
 import os
 from datetime import datetime
+from .file import read_file
+from .file import export_iterable
 
 
 ############
@@ -25,8 +27,6 @@ def end_log(func, log_file, log_length=0):
     if log_length == 0:
         pass
     else:
-        # FIX NEEDED: Something Causes Files to Be 'Randomly' Deleted
-        # Haven't Been Able to Trace the Issue Yet
-        #  os.system('cat ' + log_file + ' | tail -n ' + str(log_length) + ' | tee ' + log_file + ' > /dev/nul')
+        export_iterable(log_file, read_file(log_file)[-abs(log_length):])
         write_to_log(func, 'Trimmed Log to ' + str(log_length) + ' Lines On Exit', log_file)
     os.system('echo -e >> ' + log_file)
