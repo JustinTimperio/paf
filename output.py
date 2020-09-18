@@ -7,16 +7,11 @@ import os
 #####################
 
 def progress_bar(iterable, prefix='Progress', suffix='Complete', fill='█', printEnd="\r"):
-    """
-    Call in a loop to create terminal progress bar
-        iteration   - Required  : current iteration (Int)
-        prefix      - Optional  : prefix string (Str)
-        suffix      - Optional  : suffix string (Str)
-        fill        - Optional  : bar fill character (Str)
-        printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
-    """
+    ''' 
+    Native progress bar for tracking progress on an iterable.
+    ''' 
     total = len(iterable)
-    decimals = 1
+    decimals = 2
     length = os.get_terminal_size()[0] - (len(prefix) + len(suffix) + 15)
 
     # Progress Bar Printing Function
