@@ -2,6 +2,7 @@
 import re
 import os
 import sys
+import subprocess
 from .file import read_file
 
 
@@ -52,10 +53,10 @@ def rm_file(file_path, sudo):
     '''
     if sudo is True:
         if os.path.exists(file_path):
-            os.system('sudo rm ' + file_path)
+            os.system('sudo /usr/bin/rm ' + escape_bash_input(file_path))
     elif sudo is False:
         if os.path.exists(file_path):
-            os.system('rm ' + file_path)
+            os.system('/usr/bin/rm ' + escape_bash_input(file_path))
     else:
         sys.exit('Error: Sudo Must be True/False!')
 
@@ -67,10 +68,10 @@ def mk_dir(dir_path, sudo):
     '''
     if sudo is True:
         if not os.path.exists(dir_path):
-            os.system("sudo mkdir " + dir_path)
+            os.system("sudo /usr/bin/mkdir " + escape_bash_input(dir_path))
     elif sudo is False:
         if not os.path.exists(dir_path):
-            os.system("mkdir " + dir_path)
+            os.system("/usr/bin/mkdir " + escape_bash_input(dir_path))
     else:
         sys.exit('Error: Sudo Must be True/False!')
 
@@ -82,10 +83,10 @@ def rm_dir(dir_path, sudo):
     '''
     if sudo is True:
         if os.path.exists(dir_path):
-            os.system('sudo rm -r ' + dir_path)
+            os.system('sudo /usr/bin/rm -r ' + escape_bash_input(dir_path))
     elif sudo is False:
         if os.path.exists(dir_path):
-            os.system('rm -r ' + dir_path)
+            os.system('/usr/bin/rm -r ' + escape_bash_input(dir_path))
     else:
         sys.exit('Error: Sudo Must be True/False!')
 
@@ -123,9 +124,9 @@ def sed_uncomment_line(pattern, file_path, sudo):
     linux config files.
     '''
     if sudo is True:
-        os.system("sudo sed -e'/" + pattern + "/s/^#//g' -i " + file_path)
+        os.system("sudo /usr/bin/sed -e'/" + pattern + "/s/^#//g' -i " + escape_bash_input(file_path))
     elif sudo is False:
-        os.system("sed -e'/" + pattern + "/s/^#//g' -i " + file_path)
+        os.system("/usr/bin/sed -e'/" + pattern + "/s/^#//g' -i " + escape_bash_input(file_path))
     else:
         sys.exit('Error: Sudo Must be True/False!')
 
@@ -137,9 +138,9 @@ def sed_comment_line(pattern, file_path, sudo):
     linux config files.
     '''
     if sudo is True:
-        os.system("sudo sed -e'/" + pattern + "/s/^#*/#/g' -i " + file_path)
+        os.system("sudo /usr/bin/sed -e'/" + pattern + "/s/^#*/#/g' -i " + escape_bash_input(file_path))
     elif sudo is False:
-        os.system("sed -e'/" + pattern + "/s/^#*/#/g' -i " + file_path)
+        os.system("/usr/bin/sed -e'/" + pattern + "/s/^#*/#/g' -i " + escape_bash_input(file_path))
     else:
         sys.exit('Error: Sudo Must be True/False!')
 
@@ -154,22 +155,22 @@ def get_permissions(basedir, typ):
     without changing the permission. This is gross but it works.
     Returns set of tuples in format (dir_path, permissions, owner, group)
     '''
-    temp_file = '/tmp/get_perms.txt'
-
     # Fetch Folder Permissions
     if typ == 'files':
-        os.system('find ' + escape_bash_input(basedir) + ' -type f -exec ls -d -l */ {} + > ' + temp_file)
+        cmd = str('/usr/bin/find ' + escape_bash_input(basedir) + ' -type f -exec ls -d -l */ {} +')
     elif typ == 'folders':
-        os.system('find ' + escape_bash_input(basedir) + ' -type d -exec ls -d -l */ {} + > ' + temp_file)
+        cmd = str('/usr/bin/find ' + escape_bash_input(basedir) + ' -type d -exec ls -d -l */ {} +')
     else:
         sys.exit('Error: Type Must Be `Files` or `Folders`!')
 
-    raw_perms = read_file(temp_file)
-    rm_file(temp_file, sudo=False)
+    raw = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+    out = str(raw.communicate())[3:]
+    out = out.split('\n')
+    out = set(out[0].split('\\n')[:-1])
 
     # Parse Perms
     perms = set()
-    for x in raw_perms:
+    for x in out:
         s = x.split(' ')
         s = ' '.join([x for x in s if x != '']).split(' ', 8)
         s = (s[8].replace("'", "").strip(), s[0].strip(), s[2].strip(), s[3].strip())

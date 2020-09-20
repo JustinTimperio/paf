@@ -7,9 +7,9 @@ import os
 #####################
 
 def progress_bar(iterable, prefix='Progress', suffix='Complete', fill='█', printEnd="\r"):
-    ''' 
+    '''
     Native progress bar for tracking progress on an iterable.
-    ''' 
+    '''
     total = len(iterable)
     decimals = 2
     length = os.get_terminal_size()[0] - (len(prefix) + len(suffix) + 15)

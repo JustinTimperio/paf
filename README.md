@@ -15,5 +15,4 @@ subdirs = paf.find_subdirs('/path/to/search')
 
 for item in paf.progress_bar(subdirs):
     time.sleep(0.1)
-
 ```

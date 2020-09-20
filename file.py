@@ -87,8 +87,8 @@ def size_of_files(file_list):
     for f in file_list:
         try:
             size += os.path.getsize(f)
-        except Exception:
-            OSError
+        except (IOError, OSError):
+            pass
 
     return size
 
@@ -139,7 +139,7 @@ def checksum_file(file_path):
     else:
         try:
             size = os.path.getsize(file_path)
-        except Exception:
+        except (IOError, OSError):
             return (file_path, 'UNREADABLE!')
 
     if size == 0:

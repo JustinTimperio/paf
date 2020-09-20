@@ -1,5 +1,4 @@
 #! /usr/bin/env python3
-import os
 from datetime import datetime
 from .file import read_file
 from .file import export_iterable
@@ -29,4 +28,7 @@ def end_log(func, log_file, log_length=0):
     else:
         export_iterable(log_file, read_file(log_file)[-abs(log_length):])
         write_to_log(func, 'Trimmed Log to ' + str(log_length) + ' Lines On Exit', log_file)
-    os.system('echo -e >> ' + log_file)
+
+    # Add Blank Line
+    with open(log_file, 'a') as f:
+        f.write("\n")

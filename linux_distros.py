@@ -24,23 +24,19 @@ def distro_name():
 ######
 
 def pacman(package, arg='-S'):
-    os.system("sudo pacman " + arg + " " + package)
+    os.system("sudo /usr/bin/pacman " + arg + " " + package)
 
 
 def yum(package, arg='install'):
-    os.system("sudo yum " + arg + " " + package)
+    os.system("sudo /usr/bin/yum " + arg + " " + package)
 
 
 def apt(package, arg='install'):
-    os.system("sudo apt-get " + arg + " " + package)
+    os.system("sudo /usr/bin/apt-get " + arg + " " + package)
 
 
 def zypper(package, arg='install'):
-    os.system("sudo zypper " + arg + " " + package)
-
-
-def pip_install(packages, arg='install'):
-    os.system("sudo pip " + arg + " " + packages)
+    os.system("sudo /usr/bin/zypper " + arg + " " + package)
 
 
 def yay_install(packages, arg='-S'):
