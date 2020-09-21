@@ -46,49 +46,49 @@ def list_normal_users():
 # File System Commands
 ######
 
-def rm_file(file_path, sudo):
+def rm_file(file_path, sudo=False):
     '''
     Uses os.system() to remove files using standard *nix commands.
     The main advatage over os submodule is support for sudo.
     '''
     if sudo is True:
-        if os.path.exists(file_path):
-            os.system('sudo /usr/bin/rm ' + escape_bash_input(file_path))
+        s = 'sudo '
     elif sudo is False:
-        if os.path.exists(file_path):
-            os.system('/usr/bin/rm ' + escape_bash_input(file_path))
+        s = ''
     else:
         sys.exit('Error: Sudo Must be True/False!')
 
+    os.system(s + '/bin/rm -f ' + escape_bash_input(file_path))
 
-def mk_dir(dir_path, sudo):
+
+def mk_dir(dir_path, sudo=False):
     '''
     Uses os.system() to make a directory using standard *nix commands.
     The main advatage over os submodule is support for sudo.
     '''
     if sudo is True:
-        if not os.path.exists(dir_path):
-            os.system("sudo /usr/bin/mkdir " + escape_bash_input(dir_path))
+        s = 'sudo '
     elif sudo is False:
-        if not os.path.exists(dir_path):
-            os.system("/usr/bin/mkdir " + escape_bash_input(dir_path))
+        s = ''
     else:
         sys.exit('Error: Sudo Must be True/False!')
 
+    os.system(s + "/bin/mkdir -p " + escape_bash_input(dir_path))
 
-def rm_dir(dir_path, sudo):
+
+def rm_dir(dir_path, sudo=False):
     '''
     Uses os.system() to remove a directory using standard *nix commands.
     The main advatage over os submodule is support for sudo.
     '''
     if sudo is True:
-        if os.path.exists(dir_path):
-            os.system('sudo /usr/bin/rm -r ' + escape_bash_input(dir_path))
+        s = 'sudo '
     elif sudo is False:
-        if os.path.exists(dir_path):
-            os.system('/usr/bin/rm -r ' + escape_bash_input(dir_path))
+        s = ''
     else:
         sys.exit('Error: Sudo Must be True/False!')
+
+    os.system(s + '/bin/rm -fr ' + escape_bash_input(dir_path))
 
 
 def basename(path):
@@ -124,11 +124,13 @@ def sed_uncomment_line(pattern, file_path, sudo):
     linux config files.
     '''
     if sudo is True:
-        os.system("sudo /usr/bin/sed -e'/" + pattern + "/s/^#//g' -i " + escape_bash_input(file_path))
+        s = 'sudo '
     elif sudo is False:
-        os.system("/usr/bin/sed -e'/" + pattern + "/s/^#//g' -i " + escape_bash_input(file_path))
+        s = ''
     else:
         sys.exit('Error: Sudo Must be True/False!')
+
+    os.system(s + "/bin/sed -e'/" + pattern + "/s/^#//g' -i " + escape_bash_input(file_path))
 
 
 def sed_comment_line(pattern, file_path, sudo):
@@ -138,11 +140,13 @@ def sed_comment_line(pattern, file_path, sudo):
     linux config files.
     '''
     if sudo is True:
-        os.system("sudo /usr/bin/sed -e'/" + pattern + "/s/^#*/#/g' -i " + escape_bash_input(file_path))
+        s = 'sudo '
     elif sudo is False:
-        os.system("/usr/bin/sed -e'/" + pattern + "/s/^#*/#/g' -i " + escape_bash_input(file_path))
+        s = ''
     else:
         sys.exit('Error: Sudo Must be True/False!')
+
+    os.system(s + "/bin/sed -e'/" + pattern + "/s/^#*/#/g' -i " + escape_bash_input(file_path))
 
 
 ############
@@ -153,16 +157,17 @@ def get_permissions(basedir, typ):
     '''
     For some reason python has no simple inbuilt way to get file or folder permissions
     without changing the permission. This is gross but it works.
-    Returns set of tuples in format (dir_path, permissions, owner, group)
+    Returns set of tuples in format (path, permissions, owner, group)
     '''
     # Fetch Folder Permissions
     if typ == 'files':
-        cmd = str('/usr/bin/find ' + escape_bash_input(basedir) + ' -type f -exec ls -d -l */ {} +')
+        typ = 'f'
     elif typ == 'folders':
-        cmd = str('/usr/bin/find ' + escape_bash_input(basedir) + ' -type d -exec ls -d -l */ {} +')
+        typ = 'd'
     else:
         sys.exit('Error: Type Must Be `Files` or `Folders`!')
 
+    cmd = str('/usr/bin/find ' + escape_bash_input(basedir) + ' -type ' + typ + ' -exec ls -d -l */ {} +')
     raw = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     out = str(raw.communicate())[3:]
     out = out.split('\n')

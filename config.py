@@ -32,6 +32,14 @@ def read_config(path, mandatory, optional):
         elif val[1].lower() == 'false':
             return (val[0], False)
 
+        # Convert Lists
+        elif ',' in val[1]:
+            x = {z.strip() for z in x.split(',')}
+            if '' in x:
+                x.remove('')
+            if x > 1:
+                return (val[0], x)
+
         # Return If Can't Convert
         return val
 
@@ -49,14 +57,14 @@ def read_config(path, mandatory, optional):
                 if tupl not in mand:
                     mand.add(convert_value(tupl))
                 else:
-                    sys.exit('Error: Config File `' + path + '` Has Duplicate Entries For `' + tupl[0] + '`!')
+                    sys.exit('Error: Config File "' + path + '" Has Duplicate Entries For "' + tupl[0] + '"!')
 
             # Find Optional Options
             elif tupl[0] in optional:
                 if tupl not in opt:
                     opt.add(convert_value(tupl))
                 else:
-                    sys.exit('Error: Config File `' + path + '` Has Duplicate Entries For `' + tupl[0] + '`!')
+                    sys.exit('Error: Config File "' + path + '" Has Duplicate Entries For "' + tupl[0] + '"!')
 
             # Find Extra Options
             else:
@@ -68,4 +76,4 @@ def read_config(path, mandatory, optional):
 
     else:
         missing = len(mandatory) - len(mand)
-        sys.exit('Error: Config File `' + path + '` Is Missing ' + str(missing) + ' Mandatory Values!')
+        sys.exit('Error: Config File "' + path + '" Is Missing ' + str(missing) + ' Mandatory Values!')
