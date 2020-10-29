@@ -1,6 +1,10 @@
 #! /usr/bin/env python3
+
 import socket
-import requests
+try:
+    import requests
+except Exception:
+    pass
 
 
 def download_url(url, file_path):
@@ -11,19 +15,39 @@ def download_url(url, file_path):
     open(file_path, 'wb').write(r.content)
 
 
-def is_url_downloadable(url):
-    '''
-    Check if a url is downloadable by requests.
-    Returns True if yes, False if no.
-    '''
-    h = requests.head(url, allow_redirects=True)
-    header = h.headers
-    content_type = header.get('content-type')
-    if 'text' in content_type.lower():
-        return False
-    if 'html' in content_type.lower():
-        return False
-    return True
+def url_content_type(url):
+    try:
+        res = requests.head(url, timeout=(5, 5))
+        status = res.status_code
+
+        try:
+            typ = res.headers['Content-Type']
+        except Exception:
+            typ = 'Unknown'
+
+        try:
+            length = res.headers['Content-Length']
+        except Exception:
+            length = 'Unknown'
+
+        try:
+            server = res.headers['Server']
+        except Exception:
+            server = 'Unknown'
+
+        res.close()
+        res_obj = (url, status, typ, length, server)
+        del res, status, typ, length, server
+        return res_obj
+
+    except requests.exceptions.Timeout:
+        return (url, 'Timeout', 'Nil', 'Nil', 'Nil')
+
+    except requests.exceptions.RequestException:
+        return (url, 'Request Error', 'Nil', 'Nil', 'Nil')
+
+    except Exception:
+        return (url, 'Unknown Error', 'Nil', 'Nil', 'Nil')
 
 
 def local_ip():
@@ -35,7 +59,7 @@ def local_ip():
         # doesn't even have to be reachable
         s.connect(('10.255.255.255', 1))
         IP = s.getsockname()[0]
-    except:
+    except Exception:
         IP = '127.0.0.1'
     finally:
         s.close()
