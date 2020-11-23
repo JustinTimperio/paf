@@ -34,11 +34,8 @@ def read_config(path, mandatory, optional):
 
         # Convert Lists
         elif ',' in val[1]:
-            x = {z.strip() for z in x.split(',')}
-            if '' in x:
-                x.remove('')
-            if x > 1:
-                return (val[0], x)
+            x = [z.strip() for z in val[1].split(',')]
+            return (val[0], tuple(x))
 
         # Return If Can't Convert
         return val
@@ -55,7 +52,8 @@ def read_config(path, mandatory, optional):
             # Find Mandatory Options
             if tupl[0] in mandatory:
                 if tupl not in mand:
-                    mand.add(convert_value(tupl))
+                    v = convert_value(tupl)
+                    mand.add(v)
                 else:
                     sys.exit('Error: Config File "' + path + '" Has Duplicate Entries For "' + tupl[0] + '"!')
 
